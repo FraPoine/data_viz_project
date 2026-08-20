@@ -1,0 +1,34 @@
+:root {
+  color-scheme: light;
+
+  --color-bg: #fbfaf7;
+  --color-surface: #ffffff;
+  --color-text: #202124;
+  --color-text-secondary: #5f6368;
+  --color-wdas: #2f6fb0;
+  --color-pixar: #a94f8a;
+  --color-dreamworks: #007c7c;
+  --color-disney-aggregate: #6f4aa8;
+  --color-remake: #a65e1a;
+  --color-exception: #3f4650;
+  --color-neutral: #9aa3ae;
+  --color-grid: #d9dee5;
+
+  --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --content-max: 73.75rem;
+  --prose-max: 48rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  --focus-ring: 0 0 0 3px var(--color-bg), 0 0 0 6px var(--color-exception);
+}
