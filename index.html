@@ -41,7 +41,6 @@
         <figure
           id="view-1"
           class="view-shell view-shell--compact"
-          data-view-placeholder="1"
           data-view-module="view1-taxonomy"
           aria-labelledby="view-1-title"
           aria-describedby="view-1-description"
@@ -49,10 +48,10 @@
           <figcaption>
             <h3 id="view-1-title">The 120-Film Comparison</h3>
             <p id="view-1-description">
-              View 1 implementation placeholder. Task 8 will render the approved compact categorical taxonomy here.
+              The main comparison covers 106 animated films. Disney animated combines WDAS and Pixar for aggregate analysis while preserving both studio identities; Disney remakes remain separate.
             </p>
           </figcaption>
-          <div class="view-placeholder" aria-hidden="true">View 1 implementation placeholder</div>
+          <div class="chart-host" aria-live="polite"></div>
         </figure>
       </section>
 
@@ -65,7 +64,6 @@
         <figure
           id="view-2"
           class="view-shell"
-          data-view-placeholder="2"
           data-view-module="view2-rivalry-timeline"
           aria-labelledby="view-2-title"
           aria-describedby="view-2-description"
@@ -73,10 +71,14 @@
           <figcaption>
             <h3 id="view-2-title">Early Rivalry, 1998–2001</h3>
             <p id="view-2-description">
-              View 2 implementation placeholder. Task 8 will render the approved exact-date annotated film timeline here.
+              Five exact release dates anchor three carefully bounded contextual cases. Their placement shows chronology, not rivalry strength or financial performance.
             </p>
           </figcaption>
-          <div class="view-placeholder" aria-hidden="true">View 2 implementation placeholder</div>
+          <div class="rivalry-composition">
+            <div class="chart-host" aria-live="polite"></div>
+            <div class="annotation-list" aria-label="Persistent rivalry context"></div>
+          </div>
+          <p class="figure-context">These cases were selected only after the systematic corpus was defined. They provide narrative context and do not determine film inclusion or create a quantitative rivalry-pair variable.</p>
         </figure>
       </section>
 
@@ -89,29 +91,37 @@
           </p>
         </div>
         <aside class="reading-guide" aria-label="Reading guide">
-          Each rolling point will represent the median adjusted U.S. domestic gross of films released in the five years ending in that year.
+          Each line point is the median adjusted U.S. domestic gross of films released in the five years ending in that year.
         </aside>
         <figure
           id="view-3"
           class="view-shell view-shell--backbone"
-          data-view-placeholder="3"
           data-view-module="view3-temporal"
-          data-keyboard-navigation="roving"
           aria-labelledby="view-3-title"
           aria-describedby="view-3-description"
         >
           <figcaption>
             <h3 id="view-3-title">The Balance Moves Over Time</h3>
             <p id="view-3-description">
-              View 3 implementation placeholder. The final SVG will expose one chart-level keyboard entry point and roving film focus rather than one Tab stop per film.
+              Annual theatrical activity and inflation-adjusted domestic performance share the same 1998–2026 time structure. Disney remakes are excluded from both components.
             </p>
           </figcaption>
-          <div class="view-placeholder view-placeholder--large" aria-hidden="true">View 3 implementation placeholder</div>
+          <section class="temporal-component" aria-labelledby="release-activity-title">
+            <h4 id="release-activity-title">A. Annual theatrical release activity</h4>
+            <p>Disney’s row preserves the WDAS/Pixar split; the aligned DreamWorks row uses the same zero-to-three scale.</p>
+            <div class="release-chart-host chart-host" aria-live="polite"></div>
+          </section>
+          <section class="temporal-component temporal-component--financial" aria-labelledby="commercial-panel-title">
+            <h4 id="commercial-panel-title">B. Adjusted U.S. domestic theatrical performance</h4>
+            <p>Small studio-shaped marks are individual films. Thick lines are the precomputed five-year trailing medians; missing gross is omitted, never treated as zero.</p>
+            <div class="financial-chart-host chart-host" aria-live="polite"></div>
+          </section>
+          <div class="caveat-grid" aria-label="Persistent interpretation caveats">
+            <p><strong>2020–21:</strong> COVID-era and unusual release conditions make post-2020 theatrical comparisons especially cautious.</p>
+            <p><strong>Soul:</strong> U.S. gross reflects a later theatrical re-release.</p>
+            <p><strong>2026*:</strong> Partial through 18 Aug; no extrapolation is applied.</p>
+          </div>
         </figure>
-        <section id="view-3-detail" class="detail-strip" aria-labelledby="view-3-detail-title" hidden>
-          <h3 id="view-3-detail-title">Selected film detail</h3>
-          <p>The persistent selected-film detail strip will be populated during Task 8.</p>
-        </section>
       </section>
 
       <section id="strategies" class="story-section story-section--secondary" aria-labelledby="strategies-title">
@@ -123,7 +133,6 @@
         <figure
           id="view-4"
           class="view-shell view-shell--secondary"
-          data-view-placeholder="4"
           data-view-module="view4-strategy-distribution"
           aria-labelledby="view-4-title"
           aria-describedby="view-4-description"
@@ -131,27 +140,24 @@
           <figcaption>
             <h3 id="view-4-title">First Entries, Extensions, and Remakes</h3>
             <p id="view-4-description">
-              View 4 implementation placeholder. Task 8 will render the approved horizontal jittered distribution with median markers here.
+              Each available film is shown within its strategy group; dark markers show precomputed medians. The comparison is descriptive and does not establish that a strategy causes financial performance.
             </p>
           </figcaption>
-          <div class="view-placeholder" aria-hidden="true">View 4 implementation placeholder</div>
+          <div class="chart-host" aria-live="polite"></div>
+          <p class="figure-context">Studio shapes and colors identify films secondarily; the primary reading is the within-group distribution. Missing adjusted-domestic values are excluded rather than plotted at zero.</p>
         </figure>
-        <section id="view-4-detail" class="detail-strip" aria-labelledby="view-4-detail-title" hidden>
-          <h3 id="view-4-detail-title">Selected film detail</h3>
-          <p>The optional persistent detail strip will be populated during Task 8.</p>
-        </section>
       </section>
 
       <section id="takeaway" class="story-section story-section--conclusion" aria-labelledby="takeaway-title">
         <p class="section-number">05</p>
         <div class="section-copy">
           <h2 id="takeaway-title">No Single Winner, No Single Measure</h2>
-          <p>The conclusion will synthesize the four approved views without introducing a new analytical chart.</p>
+          <p>The available measures show a changing competitive balance, not a permanent winner.</p>
         </div>
         <div class="takeaway-grid" aria-label="Conclusion themes">
-          <article><h3>The balance moves.</h3><p>Final synthesis copy will be implemented after the analytical views are complete.</p></article>
-          <article><h3>Measures are complementary.</h3><p>Release activity and theatrical financial measures answer different questions.</p></article>
-          <article><h3>The evidence has boundaries.</h3><p>Release context and unavailable audience data remain part of the interpretation.</p></article>
+          <article><h3>The balance moves.</h3><p>Release activity and adjusted-domestic trends shift across the period; neither studio side holds one fixed position.</p></article>
+          <article><h3>Measures are complementary.</h3><p>Different financial measures describe different aspects of theatrical performance, while release counts describe activity rather than revenue.</p></article>
+          <article><h3>The evidence has boundaries.</h3><p>The available measures show theatrical patterns within a frozen corpus. Release context, missingness, and narrative evidence limit broader claims.</p></article>
         </div>
       </section>
 
@@ -159,9 +165,11 @@
         <details>
           <summary id="methodology-title">Methodology &amp; Sources</summary>
           <div class="methodology__content">
-            <p>
-              Task 8 will populate the approved methodological disclosure. The final section will document CPI-U adjustment, nominal worldwide gross, reported production budgets, missing TMDB audience data, sparse international gross, special release contexts, the frozen cutoff, and sources.
-            </p>
+            <p><strong>Corpus.</strong> The frozen catalogue contains 120 theatrical films released from 1998 through 18 August 2026: 29 Walt Disney Animation Studios films, 28 Pixar Animation Studios films, 49 DreamWorks Animation films, and a separate 14-film Walt Disney Pictures remake/reimagining layer.</p>
+            <p><strong>Analytical sides.</strong> “Disney animated (WDAS + Pixar)” aggregates WDAS and Pixar only where the comparison requires a Disney animated side. Pixar remains labeled Pixar Animation Studios. Disney remakes never enter the main animated temporal comparison.</p>
+            <p><strong>Financial measure.</strong> The primary charts use U.S. domestic theatrical gross expressed in July-2026 USD equivalent. Worldwide gross, where referenced in the underlying data, remains nominal; reported production budgets remain estimates. Sparse international gross is not used systematically.</p>
+            <p><strong>Missingness and release context.</strong> TMDB ratings and vote counts are unavailable for all 120 films. Missing adjusted-domestic values are omitted, not replaced with zero. COVID-era and day-and-date releases are retained with context rather than counterfactually corrected. Soul’s U.S. value reflects a later theatrical re-release, and 2026 is partial through 18 August.</p>
+            <p><strong>Rivalry context.</strong> The three early cases are sourced narrative annotations chosen after corpus definition. They are not a quantitative rivalry variable, and Shrek has no assigned Disney counterpart.</p>
           </div>
         </details>
       </section>

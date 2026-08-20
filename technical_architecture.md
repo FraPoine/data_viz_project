@@ -154,7 +154,7 @@ Not selected. They would reduce per-mark semantic accessibility while providing 
 
 ### Data layer
 
-Task 7 will generate static JSON into `public/data/derived/`. View modules will load only the files they need through a shared data loader. Frozen CSV/Markdown sources remain outside the public runtime bundle in `data/frozen/`.
+Task 7 generates static JSON into `public/data/derived/`. View modules receive only the files they need through the shared data loader. Frozen CSV/Markdown sources remain outside the public runtime bundle in `data/frozen/`.
 
 ### Shared configuration
 
@@ -176,7 +176,7 @@ Task 7 will generate static JSON into `public/data/derived/`. View modules will 
 `src/utils/svg.js`
 - SVG creation and accessible title/description helpers.
 
-Later implementation may add narrowly scoped `scale.js`, `axis.js`, and `resize.js` helpers if repetition appears; they should not become a general charting framework.
+Task 8 adds narrowly scoped `scale.js` and `resize.js` helpers plus SVG mark/path helpers. They support the four views without becoming a general charting framework.
 
 ### Views
 
@@ -189,7 +189,7 @@ Each view owns its SVG layout and temporary interaction focus. Shared semantics 
 
 ### Detail components
 
-A shared persistent film-detail renderer should be introduced when Task 8 implements film selection. It consumes a selected film record and a context-specific allowed-field configuration; it must not expose every dataset field.
+A shared persistent film-detail renderer should be introduced when Task 9 implements film selection. It should consume a selected film record and a context-specific allowed-field configuration; it must not expose every dataset field.
 
 ## 6. State Model
 

@@ -8,16 +8,16 @@ The final visual story asks:
 
 ## Current status
 
-**Task 7 complete:** the technical architecture, runnable project skeleton, and deterministic visualization data layer are implemented.
+**Task 8 complete:** the approved core visual story is implemented with four responsive native-SVG views backed by the validated runtime data layer.
 
-Visualization-ready JSON is now generated and validated automatically from the frozen 120-film analytical dataset. The four final chart views, axes/SVG marks, production tooltips, and final visual interactions are **not implemented yet**. Task 8 is the next stage.
+The default reading experience now includes the corpus taxonomy, early-rivalry timeline, coordinated release/performance view, strategy distribution, conclusion, and methodology disclosure. Task 9 is the next stage and will add the richer tooltip, selection, detail, and keyboard exploration layer without changing the default analytical story.
 
 ## Architecture
 
 - semantic HTML;
 - CSS with centralized design tokens;
 - vanilla JavaScript ES modules;
-- native SVG/DOM APIs for Task 8 chart rendering;
+- native SVG/DOM APIs for responsive chart rendering;
 - Python + pandas for deterministic visualization-data preprocessing;
 - zero frontend runtime dependencies and no backend;
 - Node.js standard-library scripts for validation, local serving, and static production build.
@@ -85,7 +85,7 @@ This validates generated schemas/counts/medians, checks per-file hashes, and fai
 npm run validate
 ```
 
-Runs frozen-data validation, derived-data validation, and skeleton/architecture smoke checks.
+Runs frozen-data validation, derived-data validation, and implementation/architecture smoke checks.
 
 ## Local development
 
@@ -112,7 +112,7 @@ npm run build
 The build intentionally follows the safe option:
 
 1. regenerate visualization data;
-2. validate frozen inputs, derived data, and skeleton;
+2. validate frozen inputs, derived data, and the core implementation;
 3. copy the static application to `dist/`.
 
 This prevents stale derived JSON from being deployed after a frozen-source change.
@@ -173,7 +173,7 @@ data_viz_project/
     ├── state/
     ├── styles/
     ├── utils/
-    └── views/                     # Four placeholders; charts start in Task 8
+    └── views/                     # Four responsive native-SVG story views
 ```
 
 `dist/` and local caches are generated/ignored rather than source-controlled.
@@ -204,14 +204,16 @@ It deliberately does not reproduce Python analytical validation in the browser.
 
 The production `dist/` directory is fully static and can be hosted on GitHub Pages, university web hosting, or another ordinary static host. No backend or commercial provider is required.
 
-## Task boundary
+## Core visual story
 
-After Task 7:
+Task 8 implements:
 
 - deterministic visualization data: **implemented**;
 - stale-data/source-hash protection: **implemented**;
 - shared frontend loading contract: **implemented**;
-- final View 1–4 rendering: **not implemented**;
-- axes, marks, rolling lines, tooltips, roving keyboard UI, and visual polish: **not implemented**.
+- responsive View 1–4 default rendering: **implemented**;
+- zero-origin annual activity and adjusted-domestic axes: **implemented**;
+- precomputed rolling lines and strategy medians: **implemented**;
+- persistent rivalry/release-context narrative: **implemented**.
 
-Task 8 will implement the approved visual story using the Task 7 data contract without changing the frozen analysis.
+Task 9 remains responsible for production tooltips, persistent film selection/detail, coordinated highlighting, aggregate focus, and dense-chart roving keyboard navigation. Task 10 remains responsible for final QA, accessibility verification, and submission validation.

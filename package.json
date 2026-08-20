@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Deliverable 3 visual-story implementation skeleton for Data Visualization Lab.",
+  "description": "Deliverable 3 core visual story for the Data Visualization Lab.",
   "scripts": {
     "data:check": "python3 scripts/validate_frozen_inputs.py",
     "data:build": "python3 scripts/build_visualization_data.py",

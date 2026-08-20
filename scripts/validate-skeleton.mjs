@@ -5,6 +5,10 @@ import { VISUAL_SYSTEM } from "../src/config/visualSystem.js";
 import { DATA_CONTRACT } from "../src/config/dataContract.js";
 import { createAppState } from "../src/state/appState.js";
 import { formatAdjustedDomestic, formatDate, formatYearLabel } from "../src/utils/format.js";
+import { initView1 } from "../src/views/view1Taxonomy.js";
+import { initView2 } from "../src/views/view2RivalryTimeline.js";
+import { initView3 } from "../src/views/view3Temporal.js";
+import { initView4 } from "../src/views/view4StrategyDistribution.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const html = await readFile(path.join(ROOT, "index.html"), "utf8");
@@ -21,9 +25,10 @@ for (const id of sectionIds) {
   previousIndex = currentIndex;
 }
 
-const placeholderCount = (html.match(/data-view-placeholder=/g) || []).length;
-assert(placeholderCount === 4, `Expected exactly 4 view placeholders, found ${placeholderCount}`);
-assert(!html.includes("<svg"), "Task 6 skeleton must not contain implemented visualization SVG");
+const viewRootCount = (html.match(/data-view-module=/g) || []).length;
+assert(viewRootCount === 4, `Expected exactly 4 approved view roots, found ${viewRootCount}`);
+assert(!html.toLowerCase().includes("implementation placeholder"), "Task 8 view placeholder text remains in the page");
+assert([initView1, initView2, initView3, initView4].every((init) => typeof init === "function"), "A Task 8 view module does not export an initializer");
 
 assert(VISUAL_SYSTEM.colors.wdas === "#2F6FB0", "WDAS color drifted from Design Freeze");
 assert(VISUAL_SYSTEM.colors.pixar === "#A94F8A", "Pixar color drifted from Design Freeze");
@@ -52,6 +57,13 @@ async function collect(dir) {
   }
 }
 await collect(ROOT);
+const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
+const dependencies = { ...(packageJson.dependencies || {}), ...(packageJson.devDependencies || {}) };
+assert(!Object.keys(dependencies).some((name) => ["d3", "react", "vue", "svelte"].includes(name)), "A forbidden visualization/framework dependency was introduced");
+const view4Source = await readFile(path.join(ROOT, "src/views/view4StrategyDistribution.js"), "utf8");
+assert(!view4Source.includes("Math.random"), "View 4 jitter must be deterministic");
+const mainSource = await readFile(path.join(ROOT, "src/main.js"), "utf8");
+assert(mainSource.includes("loadVisualizationData"), "Application startup must use the shared data loader");
 const forbiddenAbsolutePrefix = ["", "mnt", "data", ""].join("/");
 for (const file of textFiles) {
   const content = await readFile(file, "utf8");
@@ -73,8 +85,7 @@ for (const file of textFiles.filter((candidate) => /\.(?:js|mjs)$/.test(candidat
   }
 }
 
-console.log("Skeleton validation passed.");
+console.log("Task 8 implementation validation passed.");
 console.log(`Narrative sections verified: ${sectionIds.join(" → ")}`);
-console.log("View placeholders: 4");
-console.log("No implemented SVG charts detected.");
-console.log("Visual-system, formatting, state, and path smoke tests passed.");
+console.log("Four rendering modules and view roots verified; no placeholder copy remains.");
+console.log("Visual-system, deterministic jitter, imports, startup, dependencies, formatting, state, and path smoke tests passed.");
