@@ -77,7 +77,7 @@ public/data/derived/
 npm run data:validate
 ```
 
-This validates generated schemas/counts/medians, checks per-file hashes, and fails if the manifest source SHA-256 no longer matches `data/frozen/final_integrated_dataset.csv`.
+This validates generated schemas/counts/medians, checks per-file hashes, and fails if the manifest SHA-256 provenance no longer matches either `data/frozen/final_integrated_dataset.csv` or `data/frozen/rivalry_cases.md`.
 
 ### Full project validation
 
@@ -180,7 +180,7 @@ data_viz_project/
 
 ## Frozen data policy
 
-`data/frozen/final_integrated_dataset.csv` is the authoritative analytical input.
+`data/frozen/final_integrated_dataset.csv` is the authoritative analytical input. The manifest also hashes `data/frozen/rivalry_cases.md`, the supporting frozen methodology for the curated rivalry annotations, so either input changing requires regeneration.
 
 Do not manually edit generated JSON and do not type quantitative chart values into frontend view modules. The required flow is:
 
@@ -196,7 +196,7 @@ Narrative rivalry copy is curated, but every annotation is explicitly tied to th
 
 ## Runtime loader
 
-`src/data/loadVisualizationData.js` provides the shared Task 8 loading boundary. It loads the manifest first, verifies compatible contract metadata, then loads requested derived files with lightweight runtime checks.
+`src/data/loadVisualizationData.js` provides the shared Task 8 loading boundary. It loads the manifest first, checks `schema_version` against the independent `schemaVersion` configuration and `data_contract_version` against `dataContractVersion`, then loads requested derived files with lightweight runtime checks.
 
 It deliberately does not reproduce Python analytical validation in the browser.
 

@@ -28,7 +28,7 @@ export async function loadVisualizationManifest() {
   const manifest = await fetchJson(derivedUrl(DATA_CONTRACT.files.manifest));
   assert(manifest && typeof manifest === "object" && !Array.isArray(manifest), "manifest must be an object");
   assert(manifest.schema_version === DATA_CONTRACT.schemaVersion, `unsupported schema version ${manifest.schema_version}`);
-  assert(manifest.data_contract_version === DATA_CONTRACT.schemaVersion, `unsupported data-contract version ${manifest.data_contract_version}`);
+  assert(manifest.data_contract_version === DATA_CONTRACT.dataContractVersion, `unsupported data-contract version ${manifest.data_contract_version}`);
   assert(manifest.source?.dataset === "final_integrated_dataset.csv", "unexpected authoritative source dataset");
   assert(manifest.source?.rows === 120, "manifest source row count must be 120");
   assert(manifest.generated_files && typeof manifest.generated_files === "object", "manifest generated_files is missing");

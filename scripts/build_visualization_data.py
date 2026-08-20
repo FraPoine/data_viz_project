@@ -474,6 +474,12 @@ def main() -> int:
             "sha256": sha256_file(DATASET),
             "rows": int(len(df)),
         },
+        "supporting_sources": {
+            "rivalry_cases": {
+                "file": "rivalry_cases.md",
+                "sha256": sha256_file(RIVALRY_METHOD),
+            },
+        },
         "corpus": {
             "total_films": int(len(df)),
             "animated_films": int(df["corpus_assignment"].isin(ANIMATED_ASSIGNMENTS).sum()),

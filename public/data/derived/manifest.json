@@ -7,6 +7,12 @@
     "sha256": "30d89af56d0b09dfee1485b9a44197dfaa5dbf39b3c4810ea2cd2bc5072938cf",
     "rows": 120
   },
+  "supporting_sources": {
+    "rivalry_cases": {
+      "file": "rivalry_cases.md",
+      "sha256": "05e0308ef9d728466c6c794433733d8c0b1e5e8c2bbd95e7042d32edca286f37"
+    }
+  },
   "corpus": {
     "total_films": 120,
     "animated_films": 106,

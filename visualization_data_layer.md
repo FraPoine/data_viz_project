@@ -80,12 +80,13 @@ Approved missing values are preserved and never imputed.
 Derived validation checks:
 
 - runtime file existence and strict JSON syntax;
-- source freshness against the manifest SHA-256;
+- source freshness against manifest SHA-256 values for `final_integrated_dataset.csv` and `rivalry_cases.md`;
 - per-file SHA-256, byte size, and record count;
 - 120 unique runtime film records;
 - exact strategy totals 71 / 35 / 14;
 - animated corpus = exactly 106 films;
 - annual release counts reconcile to 29 WDAS, 28 Pixar, 57 Disney animated, and 49 DreamWorks;
+- annual release counts are non-negative integers, satisfy `disney_animated = wdas + pixar`, mark only 2026 partial, and have exact Disney-animated and DreamWorks maxima of 3;
 - rolling windows span exactly five calendar years and contain at least four available adjusted-domestic observations;
 - strategy availability = 71/71, 34/35, 13/14;
 - rivalry annotations resolve only to the five approved contextual films;
@@ -303,7 +304,8 @@ The manifest includes:
 - `schema_version`;
 - `data_contract_version`;
 - `frozen_cutoff`;
-- authoritative source dataset filename, row count, and SHA-256;
+- authoritative quantitative source dataset filename, row count, and SHA-256;
+- supporting rivalry-methodology filename and SHA-256;
 - total/animated/side counts;
 - exact studio, corpus-assignment, and strategy counts;
 - generated-file record count, SHA-256, and byte size;
@@ -335,9 +337,9 @@ Determinism is supported by:
 - fixed year/strategy/side ordering;
 - strict JSON serialization;
 - no volatile timestamp;
-- SHA-256 metadata for authoritative input and derived payloads.
+- SHA-256 metadata for the authoritative CSV, supporting rivalry methodology, and derived payloads.
 
-If the frozen CSV changes without regenerating derived JSON, `data:validate` fails on the source hash.
+If either `final_integrated_dataset.csv` or `rivalry_cases.md` changes without regenerating derived JSON, `data:validate` fails on the corresponding source hash.
 
 ## 12. Build Integration
 
@@ -372,7 +374,7 @@ src/data/loadVisualizationData.js
 The loader:
 
 1. loads `manifest.json` first;
-2. checks schema/data-contract compatibility;
+2. checks `schema_version` against `schemaVersion` and independently checks `data_contract_version` against `dataContractVersion`;
 3. verifies the expected authoritative dataset identity and 120-row contract;
 4. loads only requested runtime datasets;
 5. checks lightweight top-level structure and required key fields;

@@ -1,5 +1,6 @@
 export const DATA_CONTRACT = Object.freeze({
   schemaVersion: 1,
+  dataContractVersion: 1,
   derivedBasePath: "./data/derived/",
   files: Object.freeze({
     manifest: "manifest.json",

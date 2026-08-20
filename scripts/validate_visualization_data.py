@@ -11,6 +11,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DATASET = ROOT / "data" / "frozen" / "final_integrated_dataset.csv"
+RIVALRY_METHOD = ROOT / "data" / "frozen" / "rivalry_cases.md"
 DERIVED_DIR = ROOT / "public" / "data" / "derived"
 
 EXPECTED_FILES = [
@@ -83,6 +84,13 @@ def main() -> int:
     if manifest.get("source", {}).get("rows") != 120:
         fail("Manifest source row count must be 120")
 
+    rivalry_source = manifest.get("supporting_sources", {}).get("rivalry_cases", {})
+    if rivalry_source.get("file") != "rivalry_cases.md":
+        fail("Manifest rivalry methodology filename is missing or unexpected")
+    current_rivalry_hash = sha256_file(RIVALRY_METHOD)
+    if rivalry_source.get("sha256") != current_rivalry_hash:
+        fail("Derived data are stale: manifest rivalry methodology hash does not match rivalry_cases.md")
+
     generated = manifest.get("generated_files")
     if set(generated or {}) != set(EXPECTED_FILES):
         fail("Manifest generated-file list does not match the data contract")
@@ -147,6 +155,14 @@ def main() -> int:
     release = loaded["release-counts.json"]
     if [row.get("release_year") for row in release] != list(range(1998, 2027)):
         fail("release-counts.json must contain every year 1998–2026 in order")
+    count_fields = ("wdas", "pixar", "disney_animated", "dreamworks")
+    for row in release:
+        for field in count_fields:
+            value = row.get(field)
+            if not isinstance(value, int) or isinstance(value, bool):
+                fail(f"release-counts {field} must be an integer for {row.get('release_year')}")
+            if value < 0:
+                fail(f"release-counts {field} must be non-negative for {row.get('release_year')}")
     if sum(row["wdas"] for row in release) != 29:
         fail("release-counts WDAS total must be 29")
     if sum(row["pixar"] for row in release) != 28:
@@ -159,6 +175,12 @@ def main() -> int:
         fail("release-counts Disney animated must equal WDAS + Pixar in every year")
     if [row["release_year"] for row in release if row.get("is_partial_year")] != [2026]:
         fail("Only 2026 may be marked as a partial year")
+    if any(not isinstance(row.get("is_partial_year"), bool) for row in release):
+        fail("release-counts is_partial_year must be a JSON boolean")
+    if max(row["disney_animated"] for row in release) != 3:
+        fail("Maximum annual Disney animated release count must be exactly 3")
+    if max(row["dreamworks"] for row in release) != 3:
+        fail("Maximum annual DreamWorks release count must be exactly 3")
 
     rolling = loaded["rolling-domestic.json"]
     allowed_sides = {"Disney animated (WDAS + Pixar)", "DreamWorks"}
@@ -249,6 +271,7 @@ def main() -> int:
 
     print("Visualization-data validation passed.")
     print(f"Source freshness SHA-256: {current_source_hash}")
+    print(f"Rivalry methodology freshness SHA-256: {current_rivalry_hash}")
     print(f"films.json: {len(films)} records | animated: {animated_count}")
     print(f"release-counts.json: {len(release)} records")
     print(f"rolling-domestic.json: {len(rolling)} records")
