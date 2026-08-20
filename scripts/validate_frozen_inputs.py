@@ -2,6 +2,7 @@
 """Validate the authoritative frozen inputs required by Deliverable 3."""
 
 from pathlib import Path
+import math
 import sys
 import pandas as pd
 
@@ -83,7 +84,22 @@ def main() -> int:
         fail("A film exceeds the frozen 2026-08-18 cutoff")
 
     if df["tmdb_user_rating"].notna().any() or df["tmdb_vote_count"].notna().any():
-        fail("Task 6 expects the frozen audience fields to remain unavailable")
+        fail("Frozen audience fields must remain unavailable")
+
+    numeric_fields = [
+        "production_budget_usd_nominal",
+        "domestic_box_office_usd_nominal",
+        "domestic_box_office_usd_jul2026",
+        "worldwide_box_office_usd_nominal",
+    ]
+    for field in numeric_fields:
+        numeric = pd.to_numeric(df[field], errors="coerce")
+        if (df[field].notna() & numeric.isna()).any():
+            fail(f"{field} contains non-numeric non-missing values")
+        if not numeric.dropna().map(math.isfinite).all():
+            fail(f"{field} contains non-finite values")
+        if (numeric.dropna() < 0).any():
+            fail(f"{field} contains negative values")
 
     print("Frozen-input validation passed.")
     print(f"Rows: {len(df)} | Unique film IDs: {df['film_id'].nunique()}")

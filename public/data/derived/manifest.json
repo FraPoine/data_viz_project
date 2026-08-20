@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "data_contract_version": 1,
+  "frozen_cutoff": "2026-08-18",
+  "source": {
+    "dataset": "final_integrated_dataset.csv",
+    "sha256": "30d89af56d0b09dfee1485b9a44197dfaa5dbf39b3c4810ea2cd2bc5072938cf",
+    "rows": 120
+  },
+  "corpus": {
+    "total_films": 120,
+    "animated_films": 106,
+    "disney_animated_films": 57,
+    "dreamworks_animated_films": 49,
+    "studio_counts": {
+      "DreamWorks Animation": 49,
+      "Walt Disney Animation Studios": 29,
+      "Pixar Animation Studios": 28,
+      "Walt Disney Pictures": 14
+    },
+    "corpus_assignment_counts": {
+      "CORE_DWA": 49,
+      "CORE_WDAS": 29,
+      "DISNEY_PIXAR": 28,
+      "DISNEY_REMAKE": 14
+    },
+    "strategy_counts": {
+      "Animated first entry": 71,
+      "Animated franchise extension": 35,
+      "Disney remake/reimagining layer": 14
+    }
+  },
+  "generated_files": {
+    "films.json": {
+      "records": 120,
+      "sha256": "9c3bc002391c9c3a5971b1a6b696e82f3ca166a76cb2ef93aad3be563bb76be0",
+      "bytes": 65219
+    },
+    "release-counts.json": {
+      "records": 29,
+      "sha256": "2f346bc68db680c4c8417c2e24ab8c632a84851d660a90679cfe346c5b19b707",
+      "bytes": 2931
+    },
+    "rolling-domestic.json": {
+      "records": 50,
+      "sha256": "51d96327ce0aadd8f06ecbfac059511963e53d160576144a3f6d623f08419dbe",
+      "bytes": 8417
+    },
+    "strategy-summary.json": {
+      "records": 3,
+      "sha256": "f83abc93e57a33a48c78dde886ebd36d7979d94928f51a66476ba44252212d68",
+      "bytes": 436
+    },
+    "rivalry-annotations.json": {
+      "records": 3,
+      "sha256": "4bb1495db4dd5e74de7c9d656644100f934610f6e141afe5d4b7234689dcae3a",
+      "bytes": 2362
+    }
+  },
+  "generation": {
+    "script": "scripts/build_visualization_data.py",
+    "deterministic": true,
+    "volatile_timestamp_omitted": true
+  }
+}

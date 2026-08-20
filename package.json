@@ -6,10 +6,12 @@
   "description": "Deliverable 3 visual-story implementation skeleton for Data Visualization Lab.",
   "scripts": {
     "data:check": "python3 scripts/validate_frozen_inputs.py",
+    "data:build": "python3 scripts/build_visualization_data.py",
+    "data:validate": "python3 scripts/validate_visualization_data.py",
     "validate:skeleton": "node scripts/validate-skeleton.mjs",
-    "validate": "npm run data:check && npm run validate:skeleton",
-    "dev": "node scripts/serve.mjs source 5173",
-    "build": "npm run validate && node scripts/build.mjs",
+    "validate": "npm run data:check && npm run data:validate && npm run validate:skeleton",
+    "dev": "npm run data:build && npm run data:validate && node scripts/serve.mjs source 5173",
+    "build": "npm run data:build && npm run validate && node scripts/build.mjs",
     "preview": "node scripts/serve.mjs dist 4173"
   },
   "engines": {
