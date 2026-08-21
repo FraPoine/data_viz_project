@@ -1,24 +1,27 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  --color-bg: #fafaf8;
-  --color-surface: #ffffff;
-  --color-text: #202124;
-  --color-text-secondary: #5f6368;
-  --color-wdas: #315a9e;
-  --color-disney-dark: #203864;
-  --color-disney-light: #afc7e8;
-  --color-disney-gold: #d6a84b;
-  --color-pixar: #9a5b9e;
-  --color-dreamworks: #168a96;
-  --color-dreamworks-dark: #075f68;
-  --color-dreamworks-light: #a9d9dd;
-  --color-dreamworks-sky: #55b5d9;
-  --color-disney-aggregate: #51468f;
-  --color-remake: #b9772a;
-  --color-exception: #3f4650;
-  --color-neutral: #d8dde3;
-  --color-grid: #d8dde3;
+  --color-bg: #10151d;
+  --color-surface: #171e28;
+  --color-surface-elevated: #202936;
+  --color-surface-subtle: #141a23;
+  --color-text: #f4f6f8;
+  --color-text-secondary: #aeb8c5;
+  --color-text-muted: #7f8a99;
+  --color-wdas: #5b8fe3;
+  --color-pixar: #d875b5;
+  --color-dreamworks: #35b7b5;
+  --color-dreamworks-label: #5ad0ce;
+  --color-disney-aggregate: #9b82e6;
+  --color-disney-aggregate-label: #b5a5f0;
+  --color-remake: #e0a14a;
+  --color-exception: #aeb8c5;
+  --color-focus: #f2c14e;
+  --color-link: #7fb4f3;
+  --color-link-hover: #a6ccf8;
+  --color-neutral: #7f8a99;
+  --color-grid: #364252;
+  --color-grid-subtle: #2a3442;
 
   --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -36,5 +39,5 @@
   --space-16: 4rem;
   --space-24: 6rem;
 
-  --focus-ring: 0 0 0 3px var(--color-bg), 0 0 0 6px var(--color-exception);
+  --focus-ring: 0 0 0 2px var(--color-bg), 0 0 0 5px var(--color-focus);
 }

@@ -8,7 +8,8 @@ body {
   line-height: 1.55;
   text-rendering: optimizeLegibility;
 }
-a { color: inherit; }
+a { color: var(--color-link); }
+a:hover { color: var(--color-link-hover); }
 button, input, summary { font: inherit; }
 :focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }
 .skip-link {
@@ -18,7 +19,7 @@ button, input, summary { font: inherit; }
   top: var(--space-4);
   transform: translateY(-180%);
   padding: var(--space-3) var(--space-4);
-  background: var(--color-text);
+  background: var(--color-focus);
   color: var(--color-bg);
   border-radius: var(--radius-sm);
 }

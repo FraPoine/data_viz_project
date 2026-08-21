@@ -32,13 +32,13 @@ View 3's film listbox and aggregate trends now have separate roles: SVG trend pa
 
 ## Color & Redundant Encoding
 
-Headless Chrome simulations were visually inspected for protanopia, deuteranopia, and achromatopsia. The subsequently approved Palette A retains studio shape redundancy (circle, triangle, square, diamond), Pixar hatch, direct trend labels, dashed exception halo, and solid selection ring so categories remain distinguishable when color differences are reduced.
+The dark-theme pass preserves the previously inspected studio shape redundancy (circle, triangle, square, diamond), Pixar hatch, direct trend labels, dashed exception halo, and solid selection ring so categories do not depend on hue alone. The encoding architecture is unchanged from the protanopia, deuteranopia, and achromatopsia simulations performed during final interaction QA.
 
-Calculated Palette A contrast ratios for key combinations were: body text on page background 15.40:1; secondary text on page background 5.79:1; secondary text on white 6.05:1; focus color on page background 9.12:1; Disney aggregate on page background 7.66:1; and the dark DreamWorks direct-label color on white 7.38:1. This was a targeted contrast check, not a full WCAG audit.
+Calculated dark-theme contrast ratios for key combinations were: primary text on page background 16.90:1 and on the primary surface 15.47:1; secondary text on the primary surface 8.35:1 and on the elevated surface 7.31:1; muted text on the primary surface 4.79:1; Disney aggregate direct-label text on the primary surface 7.67:1; DreamWorks direct-label text on the primary surface 9.06:1; link text on the primary surface 7.76:1; and focus gold on the primary surface 9.99:1. Grid and subtle-grid lines intentionally remain low-emphasis at 1.64:1 and 1.33:1 against the primary surface. This was a targeted contrast check, not a full WCAG audit.
 
 ## Responsive Review
 
-The production build was browser-tested at 1440, 1100, 900, 700, and 390 pixels. Automated layout checks found no page-level horizontal overflow; narrow chart overflow remained local. Screenshots were inspected at 1440, 900, 700, and 390 pixels, with chart-level inspection of Views 2–4. Navigation wraps, annotation/detail grids stack, chart text remains legible through local scrolling, and View 3 retains its designed height.
+The dark production build was visually inspected at 1440, 900, 700, and 390 pixels. Full-page screenshots covered the hero, all four views, conclusion, methodology, and footer at desktop and narrow widths. Navigation wraps, annotation/detail grids stack, chart surfaces remain distinct from the page background, chart text remains legible through local scrolling, and View 3 retains its designed hierarchy.
 
 ## Interaction Review
 

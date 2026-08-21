@@ -17,7 +17,7 @@ function addPixarPattern(svg) {
   const defs = appendSvg(svg, "defs");
   const pattern = appendSvg(defs, "pattern", { id: "pixar-hatch", width: 8, height: 8, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" });
   appendSvg(pattern, "rect", { width: 8, height: 8, fill: colors.pixar });
-  appendSvg(pattern, "line", { x1: 0, y1: 0, x2: 0, y2: 8, stroke: "#ffffff", "stroke-width": 2, opacity: 0.7 });
+  appendSvg(pattern, "line", { x1: 0, y1: 0, x2: 0, y2: 8, stroke: colors.primaryText, "stroke-width": 2, opacity: 0.58 });
 }
 
 function renderReleaseChart(host, releaseCounts, availableWidth) {
@@ -115,13 +115,13 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
     appendSvg(mark, "title", {}, `${film.title}, ${film.studio}, ${formatUsdCompact(film.domestic_box_office_usd_jul2026)}`);
   });
   const sides = [
-    { name: labels.disneyAnimatedAggregate, color: colors.disneyAnimatedAggregate, labelColor: colors.disneyAnimatedAggregate },
-    { name: "DreamWorks", color: colors.dreamworks, labelColor: colors.dreamworksDark }
+    { name: labels.disneyAnimatedAggregate, color: colors.disneyAnimatedAggregate, labelColor: colors.disneyAggregateLabel },
+    { name: "DreamWorks", color: colors.dreamworks, labelColor: colors.dreamworksLabel }
   ];
   sides.forEach((side) => {
     const rows = rollingDomestic.filter((row) => row.animated_side === side.name);
     const points = rows.map((row) => [x(new Date(`${row.window_end_year}-07-01T00:00:00Z`)), y(row.median_domestic_box_office_usd_jul2026)]);
-    appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: colors.background, "stroke-width": 8, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-underlay" });
+    appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: colors.surface, "stroke-width": 8, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-underlay" });
     appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: side.color, "stroke-width": 4.5, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-line", "data-animated-side": side.name });
     const [lastX, lastY] = points.at(-1);
     appendSvg(svg, "line", { x1: lastX, x2: lastX + 14, y1: lastY, y2: lastY, stroke: side.color, "stroke-width": 3 });

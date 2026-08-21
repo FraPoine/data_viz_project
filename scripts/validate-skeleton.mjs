@@ -50,25 +50,32 @@ assert(/id="view-3-detail"[^>]*aria-live="polite"/i.test(html), "View 3 detail s
 assert(/id="view-4-detail"[^>]*aria-live="polite"/i.test(html), "View 4 detail strip must remain a polite live region");
 assert(!/<(?:select|input)[\s>]/i.test(html), "Global filter controls are not allowed");
 
-assert(VISUAL_SYSTEM.colors.wdas === "#315A9E", "WDAS color drifted from Palette A");
-assert(VISUAL_SYSTEM.colors.pixar === "#9A5B9E", "Pixar color drifted from Palette A");
-assert(VISUAL_SYSTEM.colors.dreamworks === "#168A96", "DreamWorks color drifted from Palette A");
-assert(VISUAL_SYSTEM.colors.disneyAnimatedAggregate === "#51468F", "Disney aggregate color drifted from Palette A");
-assert(VISUAL_SYSTEM.colors.disneyRemake === "#B9772A", "Remake color drifted from Palette A");
-assert(VISUAL_SYSTEM.colors.exceptionalRelease === "#3F4650", "Exception color drifted from Palette A");
-assert(VISUAL_SYSTEM.colors.background === "#FAFAF8", "Page background drifted from Palette A");
-assert(VISUAL_SYSTEM.colors.grid === "#D8DDE3", "Grid color drifted from Palette A");
+assert(VISUAL_SYSTEM.colors.wdas === "#5B8FE3", "WDAS color drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.pixar === "#D875B5", "Pixar color drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.dreamworks === "#35B7B5", "DreamWorks color drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.disneyAnimatedAggregate === "#9B82E6", "Disney aggregate color drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.disneyRemake === "#E0A14A", "Remake color drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.exceptionalRelease === "#AEB8C5", "Exception color drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.background === "#10151D", "Page background drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.surface === "#171E28", "Primary surface drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.primaryText === "#F4F6F8", "Primary text drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.grid === "#364252", "Grid color drifted from the dark theme");
+assert(VISUAL_SYSTEM.colors.focus === "#F2C14E", "Focus color drifted from the dark theme");
 assert(VISUAL_SYSTEM.filmShapes["Pixar Animation Studios"] === "triangle-up", "Pixar shape drifted");
 const tokenSource = (await readFile(path.join(ROOT, "src/styles/tokens.css"), "utf8")).toUpperCase();
 for (const [token, value] of Object.entries({
-  "--COLOR-BG": "#FAFAF8",
-  "--COLOR-WDAS": "#315A9E",
-  "--COLOR-PIXAR": "#9A5B9E",
-  "--COLOR-DREAMWORKS": "#168A96",
-  "--COLOR-DISNEY-AGGREGATE": "#51468F",
-  "--COLOR-REMAKE": "#B9772A",
-  "--COLOR-EXCEPTION": "#3F4650",
-  "--COLOR-GRID": "#D8DDE3"
+  "--COLOR-BG": "#10151D",
+  "--COLOR-SURFACE": "#171E28",
+  "--COLOR-SURFACE-ELEVATED": "#202936",
+  "--COLOR-TEXT": "#F4F6F8",
+  "--COLOR-WDAS": "#5B8FE3",
+  "--COLOR-PIXAR": "#D875B5",
+  "--COLOR-DREAMWORKS": "#35B7B5",
+  "--COLOR-DISNEY-AGGREGATE": "#9B82E6",
+  "--COLOR-REMAKE": "#E0A14A",
+  "--COLOR-EXCEPTION": "#AEB8C5",
+  "--COLOR-GRID": "#364252",
+  "--COLOR-FOCUS": "#F2C14E"
 })) {
   assert(tokenSource.includes(`${token}: ${value}`), `${token} CSS token drifted from Palette A`);
 }
