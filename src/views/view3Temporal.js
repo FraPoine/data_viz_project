@@ -82,6 +82,7 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
     label: "Adjusted U.S. domestic theatrical gross and five-year trailing medians over time",
     description: "A zero-origin linear chart plots 105 animated films by exact release date and adjusted domestic gross. Thick precomputed median lines show Disney animated and DreamWorks trends. Dashed halos identify unusual release contexts, especially around 2020 and 2021."
   });
+  svg.setAttribute("role", "group");
   host.append(svg);
   appendSvg(svg, "text", { x: margin.left, y: 22, class: "chart-kicker" }, "U.S. DOMESTIC THEATRICAL GROSS · JULY-2026 USD EQUIVALENT");
   for (let tick = 0; tick <= maximum; tick += 100_000_000) {
@@ -99,7 +100,7 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
   const covidX = x(new Date("2020-01-01T00:00:00Z"));
   appendSvg(svg, "line", { x1: covidX, x2: covidX, y1: margin.top + 10, y2: height - margin.bottom, class: "context-rule" });
   appendSvg(svg, "text", { x: covidX + 8, y: margin.top + 18, class: "context-label" }, "2020–21: unusual release conditions");
-  const marksLayer = appendSvg(svg, "g", { class: "film-marks", role: "list" });
+  const marksLayer = appendSvg(svg, "g", { class: "film-marks", role: "group", "aria-label": "Animated film options" });
   animatedFilms.forEach((film) => {
     const cx = x(new Date(`${film.release_date}T00:00:00Z`));
     const cy = y(film.domestic_box_office_usd_jul2026);
@@ -121,7 +122,7 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
     const rows = rollingDomestic.filter((row) => row.animated_side === side.name);
     const points = rows.map((row) => [x(new Date(`${row.window_end_year}-07-01T00:00:00Z`)), y(row.median_domestic_box_office_usd_jul2026)]);
     appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: colors.background, "stroke-width": 8, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-underlay" });
-    appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: side.color, "stroke-width": 4.5, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-line", "data-animated-side": side.name, tabindex: 0, role: "button", "aria-label": `Focus ${side.name} five-year trailing median trend` });
+    appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: side.color, "stroke-width": 4.5, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-line", "data-animated-side": side.name });
     const [lastX, lastY] = points.at(-1);
     appendSvg(svg, "line", { x1: lastX, x2: lastX + 14, y1: lastY, y2: lastY, stroke: side.color, "stroke-width": 3 });
     appendSvg(svg, "text", { x: lastX + 20, y: lastY + 4, fill: side.color, class: "direct-line-label", "data-animated-side": side.name }, side.name);
@@ -133,6 +134,7 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   if (!container) throw new Error("Missing container for View 3");
   const releaseHost = container.querySelector(".release-chart-host");
   const financialHost = container.querySelector(".financial-chart-host");
+  const trendControls = container.querySelector(".trend-focus-controls");
   const detailHost = document.querySelector("#view-3-detail");
   const animatedFilms = films.filter((film) => ANIMATED.has(film.corpus_assignment) && film.domestic_box_office_usd_jul2026 !== null);
   const filmById = new Map(animatedFilms.map((film) => [film.film_id, film]));
@@ -145,6 +147,14 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   financialHost.setAttribute("role", "listbox");
   financialHost.setAttribute("aria-label", "Explore 105 animated films chronologically. Use arrow keys to move, Enter or Space to select, and Escape to clear selection.");
   financialHost.setAttribute("aria-describedby", "view-3-keyboard-instructions");
+  trendControls.replaceChildren(...[labels.disneyAnimatedAggregate, "DreamWorks"].map((side) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "trend-focus-control";
+    button.dataset.animatedSide = side;
+    button.textContent = `${side} five-year trailing median trend`;
+    return button;
+  }));
 
   function markForFilm(filmId) {
     return financialHost.querySelector(`#view3-film-${filmId}`);
@@ -254,13 +264,15 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
     navigation.activateFilm(group.dataset.filmId, { announce: false });
     selectFilm(filmById.get(group.dataset.filmId), group.querySelector(".film-point"));
   });
-  financialHost.addEventListener("focusin", (event) => {
+  financialHost.addEventListener("focusout", (event) => {
+    if (event.target === financialHost) clearTemporaryFocus(markForFilm(activeFilmId));
+  });
+  trendControls.addEventListener("focusin", (event) => {
     const side = event.target.dataset?.animatedSide;
     if (side) { focusedSide = side; applyFinancialState(); }
   });
-  financialHost.addEventListener("focusout", (event) => {
+  trendControls.addEventListener("focusout", (event) => {
     if (event.target.dataset?.animatedSide) { focusedSide = null; applyFinancialState(); }
-    if (event.target === financialHost) clearTemporaryFocus(markForFilm(activeFilmId));
   });
   financialHost.addEventListener("keydown", (event) => {
     if (event.key === "Escape") restoreDefault();

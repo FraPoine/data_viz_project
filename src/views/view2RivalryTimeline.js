@@ -74,6 +74,8 @@ export function initView2(container, { films, rivalryAnnotations }) {
   }
 
   const render = (availableWidth) => {
+    const focusedMark = document.activeElement?.closest?.(".timeline-mark");
+    const restoreFocusedFilmId = focusedMark && chartHost.contains(focusedMark) ? focusedMark.dataset.filmId : null;
     chartHost.replaceChildren();
     const narrow = availableWidth < 700;
     const width = narrow ? 700 : 1080;
@@ -118,6 +120,7 @@ export function initView2(container, { films, rivalryAnnotations }) {
     });
     appendSvg(svg, "text", { x: right, y: lanes["DreamWorks Animation"] + 50, "text-anchor": "end", class: "timeline-unpaired" }, "No paired Disney counterpart");
     applyState();
+    if (restoreFocusedFilmId) chartHost.querySelector(`#view2-film-${restoreFocusedFilmId}`)?.focus({ preventScroll: true });
   };
   chartHost.addEventListener("pointerover", (event) => {
     const mark = event.target.closest?.(".timeline-mark");

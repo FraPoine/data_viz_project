@@ -61,6 +61,9 @@
 .trend-line { opacity: .98; cursor: pointer; transition: opacity 120ms ease, stroke-width 120ms ease; }
 .trend-line.is-focused, .trend-line:focus-visible { stroke-width: 6; }
 .trend-line.is-deemphasized { opacity: .32; }
+.trend-focus-controls { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .65rem; }
+.trend-focus-control { border: 1px solid var(--color-grid); border-radius: 999px; background: var(--color-surface); color: var(--color-text-secondary); padding: .4rem .7rem; font: inherit; font-size: .82rem; cursor: pointer; }
+.trend-focus-control:hover, .trend-focus-control:focus-visible { color: var(--color-text); border-color: var(--color-neutral); }
 .direct-line-label { font-size: 12px !important; }
 .context-rule { stroke: var(--color-exception); stroke-width: 1; stroke-dasharray: 3 4; opacity: .65; }
 .median-marker { stroke: var(--color-exception); stroke-width: 2.6; }

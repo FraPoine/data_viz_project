@@ -53,5 +53,14 @@ export function createTooltip() {
     element.hidden = true;
   }
 
-  return Object.freeze({ element, show, hide, destroy: () => element.remove() });
+  return Object.freeze({
+    element,
+    show,
+    hide,
+    destroy() {
+      currentAnchor?.removeAttribute("aria-describedby");
+      currentAnchor = null;
+      element.remove();
+    }
+  });
 }

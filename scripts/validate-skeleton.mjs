@@ -34,6 +34,8 @@ assert(!html.toLowerCase().includes("implementation placeholder"), "Task 8 view 
 assert([initView1, initView2, initView3, initView4].every((init) => typeof init === "function"), "A Task 8 view module does not export an initializer");
 assert([createTooltip, renderFilmDetail, createFilmNavigation].every((item) => typeof item === "function"), "A shared Task 9 interaction module is missing");
 assert(html.includes('id="view-3-detail"') && html.includes('id="view-4-detail"'), "Below-chart film detail strips are missing");
+assert(html.includes('id="view-3-keyboard-instructions"') && html.includes('id="view-4-keyboard-instructions"'), "Dense-chart keyboard instructions are missing");
+assert(html.includes('class="trend-focus-controls"'), "View 3 aggregate trend controls must be semantically separate from the film explorer");
 assert(html.indexOf('id="view-3-detail"') > html.indexOf('id="view-3"'), "View 3 detail strip must follow View 3");
 assert(html.indexOf('id="view-4-detail"') > html.indexOf('id="view-4"'), "View 4 detail strip must follow View 4");
 assert(!/<(?:select|input)[\s>]/i.test(html), "Global filter controls are not allowed");
@@ -77,9 +79,12 @@ const view3Source = await readFile(path.join(ROOT, "src/views/view3Temporal.js")
 assert(!view3Source.includes("tabindex: 0, role: \"option\""), "View 3 films must not become individual Tab stops");
 assert(view3Source.includes("one-entry-activedescendant"), "View 3 dense-chart keyboard architecture is missing");
 assert(view3Source.includes("data-film-id"), "View 3 film marks need stable film IDs");
+assert(!/class: "trend-line"[^\n]+tabindex/.test(view3Source), "View 3 trend paths must not be focusable inside the film listbox");
+assert(view3Source.includes('querySelector(".trend-focus-controls")'), "View 3 separate aggregate trend controls are missing");
 const view2Source = await readFile(path.join(ROOT, "src/views/view2RivalryTimeline.js"), "utf8");
 assert(!view2Source.includes("CASE_FILMS"), "View 2 must derive contextual films from runtime annotations");
 assert(view2Source.includes("rivalryAnnotations.flatMap"), "View 2 runtime film-ID derivation is missing");
+assert(view2Source.includes("restoreFocusedFilmId"), "View 2 responsive focus restoration is missing");
 const mainSource = await readFile(path.join(ROOT, "src/main.js"), "utf8");
 assert(mainSource.includes("loadVisualizationData"), "Application startup must use the shared data loader");
 const forbiddenAbsolutePrefix = ["", "mnt", "data", ""].join("/");
@@ -87,6 +92,8 @@ for (const file of textFiles) {
   const content = await readFile(file, "utf8");
   assert(!content.includes(forbiddenAbsolutePrefix), `Legacy absolute sandbox path found in ${path.relative(ROOT, file)}`);
 }
+const architectureSource = await readFile(path.join(ROOT, "technical_architecture.md"), "utf8");
+assert(!architectureSource.includes("viewShell.js"), "Architecture documentation references removed viewShell.js");
 
 
 // Verify every relative JavaScript import resolves to an existing file.
@@ -103,7 +110,7 @@ for (const file of textFiles.filter((candidate) => /\.(?:js|mjs)$/.test(candidat
   }
 }
 
-console.log("Task 9 implementation validation passed.");
+console.log("Final implementation validation passed.");
 console.log(`Narrative sections verified: ${sectionIds.join(" → ")}`);
 console.log("Four rendering modules, local detail strips, runtime rivalry linkage, and controlled keyboard exploration verified.");
 console.log("Visual-system, median semantics, deterministic jitter, imports, startup, dependencies, formatting, local state, and path smoke tests passed.");
