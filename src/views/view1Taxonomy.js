@@ -31,7 +31,7 @@ export function initView1(container, { manifest }) {
     appendSvg(svg, "rect", { ...animated, rx: 14, class: "taxonomy-container" });
     const header = appendSvg(svg, "g", { transform: `translate(${animated.x + 24} ${animated.y + 45})`, class: "taxonomy-header" });
     labelBlock(header, 0, 0, corpus.animated_films, "Primary animated comparison", "Disney animated and DreamWorks", colors.primaryText);
-    const childRow = appendSvg(svg, "g", { transform: `translate(${animated.x + 24} ${animated.y + 112})`, class: "taxonomy-child-row" });
+    const childRow = appendSvg(svg, "g", { transform: `translate(${animated.x + 24} ${animated.y + 106})`, class: "taxonomy-child-row" });
     const disney = narrow ? { x: 0, y: 0, width: 540, height: 112 } : { x: 0, y: 0, width: 475, height: 108 };
     appendSvg(childRow, "rect", { ...disney, rx: 10, class: "taxonomy-subcontainer taxonomy-subcontainer--disney" });
     const studioCounts = corpus.studio_counts;
@@ -53,7 +53,10 @@ export function initView1(container, { manifest }) {
     appendSvg(svg, "text", { x: remakeTextX, y: remakeTextY, class: "taxonomy-count", fill: colors.disneyRemake }, corpus.strategy_counts[labels.remakeLayer]);
     appendSvg(svg, "text", { x: remakeTextX, y: remakeTextY + 25, class: "taxonomy-label" }, "Disney remake/reimagining");
     appendSvg(svg, "text", { x: remakeTextX, y: remakeTextY + 42, class: "taxonomy-label" }, "layer");
-    appendSvg(svg, "text", { x: remakeTextX, y: remakeTextY + 62, class: "chart-note" }, "Separate from animated comparison");
+    const remakeNoteY = remakeTextY + (narrow ? 58 : 62);
+    const remakeNote = appendSvg(svg, "text", { x: remakeTextX, y: remakeNoteY, class: "chart-note" });
+    appendSvg(remakeNote, "tspan", { x: remakeTextX }, "Separate from animated");
+    appendSvg(remakeNote, "tspan", { x: remakeTextX, dy: 16 }, "comparison");
   };
   container.dataset.viewStatus = "rendered";
   return observeContainer(host, render);
