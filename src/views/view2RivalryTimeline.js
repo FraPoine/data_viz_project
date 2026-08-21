@@ -7,14 +7,33 @@ import { observeContainer } from "../utils/resize.js";
 const { colors, filmShapes } = VISUAL_SYSTEM;
 const STUDIO_COLOR = { "Walt Disney Animation Studios": colors.wdas, "Pixar Animation Studios": colors.pixar, "DreamWorks Animation": colors.dreamworks };
 
-function renderAnnotations(host, annotations) {
-  host.replaceChildren(...annotations.map((annotation, index) => {
+function createFilmLabels(films) {
+  const labels = document.createElement("div");
+  labels.className = "rivalry-case__films";
+  films.forEach((film) => {
+    const label = document.createElement("span");
+    const marker = document.createElement("i");
+    marker.className = `rivalry-case__marker rivalry-case__marker--${film.studio === "Pixar Animation Studios" ? "pixar" : film.studio === "DreamWorks Animation" ? "dreamworks" : "wdas"}`;
+    marker.setAttribute("aria-hidden", "true");
+    label.append(marker, film.title);
+    labels.append(label);
+  });
+  return labels;
+}
+
+function renderAnnotations(host, annotations, films) {
+  const filmById = new Map(films.map((film) => [film.film_id, film]));
+  const documentedCases = annotations.map((annotation, index) => {
+    const item = document.createElement("li");
     const article = document.createElement("article");
     article.className = "annotation-card";
     article.dataset.annotationId = annotation.annotation_id;
     const number = document.createElement("span");
     number.className = "annotation-card__number";
     number.textContent = `0${index + 1}`;
+    const caseFilms = annotation.film_ids.map((filmId) => filmById.get(filmId));
+    if (caseFilms.some((film) => !film)) throw new Error(`A documented rivalry-context film could not be resolved: ${annotation.annotation_id}`);
+    const filmLabels = createFilmLabels(caseFilms);
     const title = document.createElement("h4");
     title.textContent = annotation.evidence_framing;
     const copy = document.createElement("p");
@@ -38,32 +57,33 @@ function renderAnnotations(host, annotations) {
       sources.append(item);
     }
     evidence.append(details, sourceTitle, sources);
-    article.append(number, title, copy, evidence);
-    return article;
-  }));
-}
-
-function renderLaterContext(container, films) {
-  const filmById = new Map(films.map((film) => [film.film_id, film]));
-  container.querySelectorAll("[data-later-film-id]").forEach((article) => {
-    const film = filmById.get(article.dataset.laterFilmId);
-    if (!film) throw new Error(`A later rivalry-context film could not be resolved: ${article.dataset.laterFilmId}`);
-    const marker = document.createElement("span");
-    marker.className = `later-context__marker later-context__marker--${film.studio === "Pixar Animation Studios" ? "pixar" : "dreamworks"}`;
-    marker.setAttribute("aria-hidden", "true");
-    const title = document.createElement("h4");
-    title.textContent = film.title;
-    const metadata = document.createElement("p");
-    metadata.textContent = `${film.release_year} · ${film.studio}`;
-    article.replaceChildren(marker, title, metadata);
+    article.append(number, filmLabels, title, copy, evidence);
+    item.append(article);
+    return item;
   });
+
+  const laterIds = host.dataset.laterFilmIds.split(" ");
+  const laterFilms = laterIds.map((filmId) => filmById.get(filmId));
+  if (laterFilms.some((film) => !film)) throw new Error("A later rivalry-context film could not be resolved");
+  const laterItem = document.createElement("li");
+  const laterArticle = document.createElement("article");
+  laterArticle.className = "annotation-card annotation-card--contextual";
+  const number = document.createElement("span");
+  number.className = "annotation-card__number";
+  number.textContent = "04";
+  const title = document.createElement("h4");
+  title.textContent = "Later thematic overlap · 2003–2004";
+  const copy = document.createElement("p");
+  copy.textContent = "Finding Nemo (2003) and Shark Tale (2004) provide a later example of Disney/Pixar and DreamWorks occupying visibly similar thematic territory: both are family-oriented animated films built around underwater worlds and released about a year apart. This observed overlap does not establish copying, coordinated release strategy, or direct causal intent.";
+  laterArticle.append(number, createFilmLabels(laterFilms), title, copy);
+  laterItem.append(laterArticle);
+  host.replaceChildren(...documentedCases, laterItem);
 }
 
 export function initView2(container, { films, rivalryAnnotations }) {
   if (!container) throw new Error("Missing container for View 2");
   const chartHost = container.querySelector(".chart-host");
-  renderAnnotations(container.querySelector(".annotation-list"), rivalryAnnotations);
-  renderLaterContext(container.closest("#rivalry"), films);
+  renderAnnotations(container.querySelector(".annotation-list"), rivalryAnnotations, films);
   const contextualFilmIds = new Set(rivalryAnnotations.flatMap((annotation) => annotation.film_ids));
   const caseFilms = films.filter((film) => contextualFilmIds.has(film.film_id));
   if (caseFilms.length !== contextualFilmIds.size) throw new Error("A View 2 rivalry annotation film could not be resolved");
@@ -80,7 +100,8 @@ export function initView2(container, { films, rivalryAnnotations }) {
     container.querySelectorAll(".annotation-card").forEach((card) => {
       const isOpen = card.dataset.annotationId === openAnnotationId;
       card.classList.toggle("is-open", isOpen);
-      card.querySelector(".annotation-evidence").hidden = !isOpen;
+      const evidence = card.querySelector(".annotation-evidence");
+      if (evidence) evidence.hidden = !isOpen;
     });
   }
 

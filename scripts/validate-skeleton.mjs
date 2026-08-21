@@ -28,9 +28,9 @@ for (const id of sectionIds) {
   previousIndex = currentIndex;
 }
 const rivalryHtml = html.slice(html.indexOf('id="rivalry"'), html.indexOf('id="balance"'));
-assert(rivalryHtml.includes('data-later-film-id="PIXAR_2003_FINDING_NEMO"'), "Finding Nemo later context is missing from the rivalry section");
-assert(rivalryHtml.includes('data-later-film-id="DWA_2004_SHARK_TALE"'), "Shark Tale later context is missing from the rivalry section");
-assert(rivalryHtml.includes("does not establish copying"), "Later rivalry context needs explicit non-causal framing");
+assert(rivalryHtml.includes('class="rivalry-case-list annotation-list"'), "Unified rivalry case list is missing from View 2");
+assert(rivalryHtml.includes('data-later-film-ids="PIXAR_2003_FINDING_NEMO DWA_2004_SHARK_TALE"'), "Finding Nemo and Shark Tale later context is missing from the rivalry list");
+assert(!rivalryHtml.includes('class="later-context"'), "Obsolete standalone later-context block remains");
 
 const viewRootCount = (html.match(/data-view-module=/g) || []).length;
 assert(viewRootCount === 4, `Expected exactly 4 approved view roots, found ${viewRootCount}`);
@@ -96,6 +96,11 @@ const view2Source = await readFile(path.join(ROOT, "src/views/view2RivalryTimeli
 assert(!view2Source.includes("CASE_FILMS"), "View 2 must derive contextual films from runtime annotations");
 assert(view2Source.includes("rivalryAnnotations.flatMap"), "View 2 runtime film-ID derivation is missing");
 assert(view2Source.includes("restoreFocusedFilmId"), "View 2 responsive focus restoration is missing");
+assert(view2Source.includes('number.textContent = "04"') && view2Source.includes("does not establish copying"), "Fourth rivalry item or its non-causal framing is missing");
+const rivalryData = JSON.parse(await readFile(path.join(ROOT, "public/data/derived/rivalry-annotations.json"), "utf8"));
+const expectedRivalryIds = ["DWA_1998_ANTZ", "PIXAR_1998_A_BUG_S_LIFE", "DWA_2000_THE_ROAD_TO_EL_DORADO", "WDAS_2000_THE_EMPEROR_S_NEW_GROOVE", "DWA_2001_SHREK"].sort();
+assert(rivalryData.length === 3, "The three approved rivalry annotation cases changed");
+assert(rivalryData.flatMap((annotation) => annotation.film_ids).sort().join("|") === expectedRivalryIds.join("|"), "The approved five-film rivalry timeline population changed");
 const mainSource = await readFile(path.join(ROOT, "src/main.js"), "utf8");
 assert(mainSource.includes("loadVisualizationData"), "Application startup must use the shared data loader");
 const forbiddenAbsolutePrefix = ["", "mnt", "data", ""].join("/");
