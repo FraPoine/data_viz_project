@@ -38,6 +38,12 @@ assert(html.includes('id="view-3-keyboard-instructions"') && html.includes('id="
 assert(html.includes('class="trend-focus-controls"'), "View 3 aggregate trend controls must be semantically separate from the film explorer");
 assert(html.indexOf('id="view-3-detail"') > html.indexOf('id="view-3"'), "View 3 detail strip must follow View 3");
 assert(html.indexOf('id="view-4-detail"') > html.indexOf('id="view-4"'), "View 4 detail strip must follow View 4");
+const view3Html = html.slice(html.indexOf('id="view-3"'), html.indexOf('id="view-3-detail"'));
+const view4Html = html.slice(html.indexOf('id="view-4"'), html.indexOf('id="view-4-detail"'));
+assert(!/<div class="financial-chart-host chart-host"[^>]*aria-live=/i.test(view3Html), "View 3 film listbox host must not also be a live region");
+assert(!/<div class="chart-host"[^>]*aria-live=/i.test(view4Html), "View 4 film listbox host must not also be a live region");
+assert(/id="view-3-detail"[^>]*aria-live="polite"/i.test(html), "View 3 detail strip must remain a polite live region");
+assert(/id="view-4-detail"[^>]*aria-live="polite"/i.test(html), "View 4 detail strip must remain a polite live region");
 assert(!/<(?:select|input)[\s>]/i.test(html), "Global filter controls are not allowed");
 
 assert(VISUAL_SYSTEM.colors.wdas === "#2F6FB0", "WDAS color drifted from Design Freeze");
@@ -75,6 +81,7 @@ assert(!view4Source.includes("Math.random"), "View 4 jitter must be deterministi
 assert(!view4Source.includes("median-diamond"), "View 4 median must not reuse the remake diamond");
 assert(!view4Source.includes("tabindex: 0"), "View 4 films must not become individual Tab stops");
 assert(view4Source.includes("data-film-id"), "View 4 film marks need stable film IDs");
+assert(view4Source.includes('svg.setAttribute("role", "group")'), "View 4 interactive SVG must expose group semantics inside the film listbox");
 const view3Source = await readFile(path.join(ROOT, "src/views/view3Temporal.js"), "utf8");
 assert(!view3Source.includes("tabindex: 0, role: \"option\""), "View 3 films must not become individual Tab stops");
 assert(view3Source.includes("one-entry-activedescendant"), "View 3 dense-chart keyboard architecture is missing");

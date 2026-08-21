@@ -97,6 +97,7 @@ export function initView4(container, { films, strategySummary }) {
       label: "Adjusted domestic gross distributions for first entries, franchise extensions, and Disney remakes",
       description: "A zero-origin horizontal strip plot groups films by strategy. Individual films use subdued studio shapes and deterministic vertical jitter. Dark median markers use the precomputed data summaries. Missing financial values are omitted. The comparison is descriptive, not causal."
     });
+    svg.setAttribute("role", "group");
     host.append(svg);
     appendSvg(svg, "text", { x: margin.left, y: 24, class: "chart-kicker" }, "U.S. DOMESTIC THEATRICAL GROSS · JULY-2026 USD EQUIVALENT");
     for (let tick = 0; tick <= maximum; tick += 100_000_000) {
