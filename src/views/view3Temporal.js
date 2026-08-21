@@ -20,12 +20,14 @@ function addPixarPattern(svg) {
   appendSvg(pattern, "line", { x1: 0, y1: 0, x2: 0, y2: 8, stroke: colors.primaryText, "stroke-width": 2, opacity: 0.58 });
 }
 
-function renderReleaseChart(host, releaseCounts, availableWidth) {
+function renderReleaseChart(host, releaseCounts, films, availableWidth) {
   host.replaceChildren();
   const narrow = availableWidth < 720;
   const width = narrow ? 760 : 1120;
   const height = narrow ? 300 : 265;
-  const margin = { left: narrow ? 112 : 150, right: 24, top: 34, bottom: 45 };
+  const margin = { left: narrow ? 142 : 180, right: 24, top: 34, bottom: 45 };
+  const rowLabelX = narrow ? 10 : 18;
+  const tickLabelX = margin.left - 12;
   const plotWidth = width - margin.left - margin.right;
   const step = plotWidth / releaseCounts.length;
   const barWidth = Math.max(5, step * 0.62);
@@ -42,20 +44,46 @@ function renderReleaseChart(host, releaseCounts, availableWidth) {
   appendSvg(svg, "text", { x: margin.left, y: 18, class: "chart-kicker" }, "ANNUAL THEATRICAL RELEASES");
   [["Disney animated", baselines.disney], ["DreamWorks", baselines.dreamworks]].forEach(([name, baseline]) => {
     appendSvg(svg, "line", { x1: margin.left, x2: width - margin.right, y1: baseline, y2: baseline, class: "axis-line" });
-    appendSvg(svg, "text", { x: margin.left - 12, y: baseline - 24, "text-anchor": "end", class: "row-label" }, name);
+    appendSvg(svg, "text", { x: rowLabelX, y: baseline - 24, class: "row-label" }, name);
     for (const count of [1, 2, 3]) {
       const y = baseline - barHeight(count);
       appendSvg(svg, "line", { x1: margin.left - 4, x2: width - margin.right, y1: y, y2: y, class: "chart-grid chart-grid--subtle" });
-      appendSvg(svg, "text", { x: margin.left - 12, y: y + 4, "text-anchor": "end", class: "axis-label" }, count);
+      appendSvg(svg, "text", { x: tickLabelX, y: y + 4, "text-anchor": "end", class: "axis-label" }, count);
     }
   });
+  const animatedFilms = films.filter((film) => ANIMATED.has(film.corpus_assignment));
+  const filmsByYearStudio = new Map();
+  for (const film of animatedFilms) {
+    const key = `${film.release_year}|${film.studio}`;
+    const group = filmsByYearStudio.get(key) ?? [];
+    group.push(film);
+    filmsByYearStudio.set(key, group);
+  }
+  for (const group of filmsByYearStudio.values()) group.sort((a, b) => a.release_date.localeCompare(b.release_date));
+  const unitHeight = barHeight(1);
+  function appendReleaseUnit(svg, film, x, y, fill) {
+    const selectable = film.domestic_box_office_usd_jul2026 !== null;
+    const unit = appendSvg(svg, "rect", {
+      x, y, width: barWidth, height: unitHeight, fill,
+      class: `release-segment release-unit${selectable ? "" : " release-unit--unavailable"}`,
+      id: `view3-release-${film.film_id}`,
+      "data-film-id": film.film_id,
+      "data-release-year": film.release_year,
+      "data-studio": film.studio,
+      role: "option",
+      "aria-disabled": String(!selectable),
+      "aria-label": `${film.title}, ${film.studio}, released ${formatDate(film.release_date)}${selectable ? ". Select to coordinate with the financial panel." : ". Financial value unavailable; no corresponding financial mark."}`
+    });
+    appendSvg(unit, "title", {}, `${film.title}, ${film.studio}, ${formatDate(film.release_date)}`);
+  }
   releaseCounts.forEach((row, index) => {
     const x = margin.left + index * step + (step - barWidth) / 2;
-    const wdasHeight = barHeight(row.wdas);
-    const pixarHeight = barHeight(row.pixar);
-    if (row.wdas) appendSvg(svg, "rect", { x, y: baselines.disney - wdasHeight, width: barWidth, height: wdasHeight, fill: colors.wdas, class: "release-segment", "data-release-year": row.release_year, "data-studio": "Walt Disney Animation Studios" });
-    if (row.pixar) appendSvg(svg, "rect", { x, y: baselines.disney - wdasHeight - pixarHeight, width: barWidth, height: pixarHeight, fill: "url(#pixar-hatch)", class: "release-segment", "data-release-year": row.release_year, "data-studio": "Pixar Animation Studios" });
-    if (row.dreamworks) appendSvg(svg, "rect", { x, y: baselines.dreamworks - barHeight(row.dreamworks), width: barWidth, height: barHeight(row.dreamworks), fill: colors.dreamworks, class: "release-segment", "data-release-year": row.release_year, "data-studio": "DreamWorks Animation" });
+    const wdas = filmsByYearStudio.get(`${row.release_year}|Walt Disney Animation Studios`) ?? [];
+    const pixar = filmsByYearStudio.get(`${row.release_year}|Pixar Animation Studios`) ?? [];
+    const dreamworks = filmsByYearStudio.get(`${row.release_year}|DreamWorks Animation`) ?? [];
+    wdas.forEach((film, unitIndex) => appendReleaseUnit(svg, film, x, baselines.disney - (unitIndex + 1) * unitHeight, colors.wdas));
+    pixar.forEach((film, unitIndex) => appendReleaseUnit(svg, film, x, baselines.disney - (wdas.length + unitIndex + 1) * unitHeight, "url(#pixar-hatch)"));
+    dreamworks.forEach((film, unitIndex) => appendReleaseUnit(svg, film, x, baselines.dreamworks - (unitIndex + 1) * unitHeight, colors.dreamworks));
     const showYear = row.release_year === 1998 || row.release_year === 2026 || (row.release_year % (narrow ? 5 : 3) === 0 && !(narrow && row.release_year === 2025));
     if (showYear) appendSvg(svg, "text", { x: x + barWidth / 2, y: height - 18, "text-anchor": "middle", class: "axis-label" }, formatYearLabel(row.release_year));
   });
@@ -136,8 +164,9 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   const financialHost = container.querySelector(".financial-chart-host");
   const trendControls = container.querySelector(".trend-focus-controls");
   const detailHost = document.querySelector("#view-3-detail");
+  const allAnimatedFilms = films.filter((film) => ANIMATED.has(film.corpus_assignment));
   const animatedFilms = films.filter((film) => ANIMATED.has(film.corpus_assignment) && film.domestic_box_office_usd_jul2026 !== null);
-  const filmById = new Map(animatedFilms.map((film) => [film.film_id, film]));
+  const filmById = new Map(allAnimatedFilms.map((film) => [film.film_id, film]));
   const tooltip = createTooltip();
   let activeFilmId = null;
   let selectedFilmId = null;
@@ -147,6 +176,10 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   financialHost.setAttribute("role", "listbox");
   financialHost.setAttribute("aria-label", "Explore 105 animated films chronologically. Use arrow keys to move, Enter or Space to select, and Escape to clear selection.");
   financialHost.setAttribute("aria-describedby", "view-3-keyboard-instructions");
+  releaseHost.tabIndex = 0;
+  releaseHost.setAttribute("role", "listbox");
+  releaseHost.setAttribute("aria-label", "Explore annual theatrical releases by film. Use arrow keys to move chronologically, Enter or Space to select, and Escape to clear selection.");
+  releaseHost.setAttribute("aria-describedby", "view-3-keyboard-instructions");
   trendControls.replaceChildren(...[labels.disneyAnimatedAggregate, "DreamWorks"].map((side) => {
     const button = document.createElement("button");
     button.type = "button";
@@ -158,6 +191,10 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
 
   function markForFilm(filmId) {
     return financialHost.querySelector(`#view3-film-${filmId}`);
+  }
+
+  function releaseMarkForFilm(filmId) {
+    return releaseHost.querySelector(`#view3-release-${filmId}`);
   }
 
   function tooltipContent(film) {
@@ -172,11 +209,11 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   }
 
   function applyReleaseSelection() {
-    const selected = filmById.get(selectedFilmId);
     releaseHost.querySelectorAll(".release-segment").forEach((segment) => {
-      const matches = selected && Number(segment.dataset.releaseYear) === selected.release_year && segment.dataset.studio === selected.studio;
+      const matches = segment.dataset.filmId === selectedFilmId;
       segment.classList.toggle("is-coordinated", Boolean(matches));
-      segment.classList.toggle("is-muted", Boolean(selected) && !matches);
+      segment.classList.toggle("is-muted", Boolean(selectedFilmId) && !matches);
+      segment.setAttribute("aria-selected", String(matches));
     });
   }
 
@@ -208,7 +245,9 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
     applyFinancialState();
   }
 
-  function selectFilm(film, mark) {
+  function selectFilmById(filmId, mark = null) {
+    const film = filmById.get(filmId);
+    if (!film || film.domestic_box_office_usd_jul2026 === null) return;
     selectedFilmId = film.film_id;
     activeFilmId = film.film_id;
     renderFilmDetail(detailHost, film);
@@ -230,9 +269,11 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   }
 
   let navigation;
+  let releaseNavigation;
   const stopRelease = observeContainer(releaseHost, (width) => {
-    renderReleaseChart(releaseHost, releaseCounts, width);
+    renderReleaseChart(releaseHost, releaseCounts, films, width);
     applyReleaseSelection();
+    releaseNavigation?.restore();
   });
   const stopFinancial = observeContainer(financialHost, (width) => {
     tooltip.hide();
@@ -242,7 +283,28 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   });
   navigation = createFilmNavigation({
     entry: financialHost, films: animatedFilms, elementForFilm: markForFilm,
-    onActive: focusFilm, onSelect: selectFilm, onClear: restoreDefault
+    onActive: focusFilm, onSelect: (film, mark) => selectFilmById(film.film_id, mark), onClear: restoreDefault
+  });
+  releaseNavigation = createFilmNavigation({
+    entry: releaseHost, films: animatedFilms, elementForFilm: releaseMarkForFilm,
+    onActive: (film) => {
+      activeFilmId = film.film_id;
+      applyFinancialState();
+    },
+    onSelect: (film) => {
+      navigation.activateFilm(film.film_id, { announce: false });
+      selectFilmById(film.film_id);
+    },
+    onClear: restoreDefault
+  });
+
+  releaseHost.addEventListener("click", (event) => {
+    const unit = event.target.closest?.(".release-unit:not(.release-unit--unavailable)");
+    if (!unit) return;
+    releaseHost.focus({ preventScroll: true });
+    releaseNavigation.activateFilm(unit.dataset.filmId, { announce: false });
+    navigation.activateFilm(unit.dataset.filmId, { announce: false });
+    selectFilmById(unit.dataset.filmId);
   });
 
   financialHost.addEventListener("pointerover", (event) => {
@@ -262,7 +324,8 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
     if (!group) return;
     financialHost.focus({ preventScroll: true });
     navigation.activateFilm(group.dataset.filmId, { announce: false });
-    selectFilm(filmById.get(group.dataset.filmId), group.querySelector(".film-point"));
+    releaseNavigation.activateFilm(group.dataset.filmId, { announce: false });
+    selectFilmById(group.dataset.filmId, group.querySelector(".film-point"));
   });
   financialHost.addEventListener("focusout", (event) => {
     if (event.target === financialHost) clearTemporaryFocus(markForFilm(activeFilmId));
@@ -279,5 +342,5 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   });
   container.dataset.viewStatus = "rendered";
   container.dataset.keyboardArchitecture = "one-entry-activedescendant";
-  return () => { stopRelease(); stopFinancial(); navigation.destroy(); tooltip.destroy(); };
+  return () => { stopRelease(); stopFinancial(); navigation.destroy(); releaseNavigation.destroy(); tooltip.destroy(); };
 }
