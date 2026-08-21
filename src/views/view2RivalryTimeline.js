@@ -6,6 +6,10 @@ import { observeContainer } from "../utils/resize.js";
 
 const { colors, filmShapes } = VISUAL_SYSTEM;
 const STUDIO_COLOR = { "Walt Disney Animation Studios": colors.wdas, "Pixar Animation Studios": colors.pixar, "DreamWorks Animation": colors.dreamworks };
+const EDITORIAL_ANNOTATION_COPY = Object.freeze({
+  "antz-bugs-life": "The strongest documented early rivalry case. The two 1998 ant-colony films were released less than two months apart amid contemporary reporting about their parallel premises and release-date maneuvering.",
+  "shrek-subversion": "Shrek deliberately overturned familiar fairy-tale conventions and was widely read through a Disney lens. Contemporary reporting also records Katzenberg rejecting the idea that the film represented a personal vendetta."
+});
 
 function createFilmLabels(films) {
   const labels = document.createElement("div");
@@ -37,7 +41,7 @@ function renderAnnotations(host, annotations, films) {
     const title = document.createElement("h4");
     title.textContent = annotation.evidence_framing;
     const copy = document.createElement("p");
-    copy.textContent = annotation.persistent_annotation;
+    copy.textContent = EDITORIAL_ANNOTATION_COPY[annotation.annotation_id] ?? annotation.persistent_annotation;
     const evidence = document.createElement("div");
     evidence.className = "annotation-evidence";
     evidence.hidden = true;

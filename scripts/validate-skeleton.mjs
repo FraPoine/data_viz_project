@@ -31,6 +31,13 @@ const rivalryHtml = html.slice(html.indexOf('id="rivalry"'), html.indexOf('id="b
 assert(rivalryHtml.includes('class="rivalry-case-list annotation-list"'), "Unified rivalry case list is missing from View 2");
 assert(rivalryHtml.includes('data-later-film-ids="PIXAR_2003_FINDING_NEMO DWA_2004_SHARK_TALE"'), "Finding Nemo and Shark Tale later context is missing from the rivalry list");
 assert(!rivalryHtml.includes('class="later-context"'), "Obsolete standalone later-context block remains");
+const narrativeText = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+for (const requiredContext of ["DreamWorks SKG", "Steven Spielberg", "Jeffrey Katzenberg", "David Geffen", "full animated corpus", "2006", "2010 onward"]) {
+  assert(narrativeText.includes(requiredContext), `Required historical narrative context is missing: ${requiredContext}`);
+}
+assert(html.indexOf("Before the rivalry") > html.indexOf('id="view-1"') && html.indexOf("Before the rivalry") < html.indexOf('id="rivalry"'), "DreamWorks origin bridge must remain between Views 1 and 2");
+assert(html.indexOf("From episodes to evidence") > html.indexOf('id="view-2"') && html.indexOf("From episodes to evidence") < html.indexOf('id="balance"'), "Systematic-evidence bridge must remain between Views 2 and 3");
+assert(html.indexOf("A second Disney strategy enters the story") > html.indexOf('id="view-3"') && html.indexOf("A second Disney strategy enters the story") < html.indexOf('id="strategies"'), "Remake-strategy bridge must remain between Views 3 and 4");
 
 const viewRootCount = (html.match(/data-view-module=/g) || []).length;
 assert(viewRootCount === 4, `Expected exactly 4 approved view roots, found ${viewRootCount}`);
@@ -120,6 +127,8 @@ assert(!view2Source.includes("CASE_FILMS"), "View 2 must derive contextual films
 assert(view2Source.includes("rivalryAnnotations.flatMap"), "View 2 runtime film-ID derivation is missing");
 assert(view2Source.includes("restoreFocusedFilmId"), "View 2 responsive focus restoration is missing");
 assert(view2Source.includes('number.textContent = "04"') && view2Source.includes("does not establish copying"), "Fourth rivalry item or its non-causal framing is missing");
+assert(view2Source.includes("release-date maneuvering"), "Antz / A Bug's Life historical framing is missing");
+assert(view2Source.includes("rejecting the idea that the film represented a personal vendetta"), "Shrek's non-vendetta framing is missing");
 const rivalryData = JSON.parse(await readFile(path.join(ROOT, "public/data/derived/rivalry-annotations.json"), "utf8"));
 const expectedRivalryIds = ["DWA_1998_ANTZ", "PIXAR_1998_A_BUG_S_LIFE", "DWA_2000_THE_ROAD_TO_EL_DORADO", "WDAS_2000_THE_EMPEROR_S_NEW_GROOVE", "DWA_2001_SHREK"].sort();
 assert(rivalryData.length === 3, "The three approved rivalry annotation cases changed");
