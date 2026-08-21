@@ -1,5 +1,8 @@
 import { VISUAL_SYSTEM } from "../config/visualSystem.js";
-import { formatUsdCompact, formatYearLabel } from "../utils/format.js";
+import { formatAdjustedDomestic, formatDate, formatUsdCompact, formatYearLabel } from "../utils/format.js";
+import { createTooltip } from "../components/tooltip.js";
+import { renderFilmDetail } from "../components/filmDetail.js";
+import { createFilmNavigation } from "../utils/focusNavigation.js";
 import { dateScale, linearScale, roundedMoneyMaximum } from "../utils/scale.js";
 import { appendSvg, configureAccessibleSvg, createSvgElement, drawFilmMark, linePath } from "../utils/svg.js";
 import { observeContainer } from "../utils/resize.js";
@@ -50,10 +53,10 @@ function renderReleaseChart(host, releaseCounts, availableWidth) {
     const x = margin.left + index * step + (step - barWidth) / 2;
     const wdasHeight = barHeight(row.wdas);
     const pixarHeight = barHeight(row.pixar);
-    if (row.wdas) appendSvg(svg, "rect", { x, y: baselines.disney - wdasHeight, width: barWidth, height: wdasHeight, fill: colors.wdas });
-    if (row.pixar) appendSvg(svg, "rect", { x, y: baselines.disney - wdasHeight - pixarHeight, width: barWidth, height: pixarHeight, fill: "url(#pixar-hatch)" });
-    if (row.dreamworks) appendSvg(svg, "rect", { x, y: baselines.dreamworks - barHeight(row.dreamworks), width: barWidth, height: barHeight(row.dreamworks), fill: colors.dreamworks });
-    const showYear = row.release_year === 1998 || row.release_year === 2026 || row.release_year % (narrow ? 5 : 3) === 0;
+    if (row.wdas) appendSvg(svg, "rect", { x, y: baselines.disney - wdasHeight, width: barWidth, height: wdasHeight, fill: colors.wdas, class: "release-segment", "data-release-year": row.release_year, "data-studio": "Walt Disney Animation Studios" });
+    if (row.pixar) appendSvg(svg, "rect", { x, y: baselines.disney - wdasHeight - pixarHeight, width: barWidth, height: pixarHeight, fill: "url(#pixar-hatch)", class: "release-segment", "data-release-year": row.release_year, "data-studio": "Pixar Animation Studios" });
+    if (row.dreamworks) appendSvg(svg, "rect", { x, y: baselines.dreamworks - barHeight(row.dreamworks), width: barWidth, height: barHeight(row.dreamworks), fill: colors.dreamworks, class: "release-segment", "data-release-year": row.release_year, "data-studio": "DreamWorks Animation" });
+    const showYear = row.release_year === 1998 || row.release_year === 2026 || (row.release_year % (narrow ? 5 : 3) === 0 && !(narrow && row.release_year === 2025));
     if (showYear) appendSvg(svg, "text", { x: x + barWidth / 2, y: height - 18, "text-anchor": "middle", class: "axis-label" }, formatYearLabel(row.release_year));
   });
   appendSvg(svg, "rect", { x: margin.left + 8, y: 124, width: 10, height: 10, fill: colors.wdas });
@@ -68,7 +71,7 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
   const narrow = availableWidth < 720;
   const width = narrow ? 780 : 1120;
   const height = narrow ? 600 : 650;
-  const margin = { left: narrow ? 92 : 116, right: narrow ? 110 : 190, top: 48, bottom: 68 };
+  const margin = { left: narrow ? 92 : 116, right: narrow ? 200 : 190, top: 48, bottom: 68 };
   const animatedFilms = films.filter((film) => ANIMATED.has(film.corpus_assignment) && film.domestic_box_office_usd_jul2026 !== null);
   const maximum = roundedMoneyMaximum(Math.max(...animatedFilms.map((film) => film.domestic_box_office_usd_jul2026)));
   const x = dateScale(START, END, margin.left, width - margin.right);
@@ -96,12 +99,18 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
   const covidX = x(new Date("2020-01-01T00:00:00Z"));
   appendSvg(svg, "line", { x1: covidX, x2: covidX, y1: margin.top + 10, y2: height - margin.bottom, class: "context-rule" });
   appendSvg(svg, "text", { x: covidX + 8, y: margin.top + 18, class: "context-label" }, "2020–21: unusual release conditions");
-  const marksLayer = appendSvg(svg, "g", { class: "film-marks", "aria-hidden": "true" });
+  const marksLayer = appendSvg(svg, "g", { class: "film-marks", role: "list" });
   animatedFilms.forEach((film) => {
     const cx = x(new Date(`${film.release_date}T00:00:00Z`));
     const cy = y(film.domestic_box_office_usd_jul2026);
-    if (film.has_release_context_caveat) appendSvg(marksLayer, "circle", { cx, cy, r: 8.5, class: "exception-halo" });
-    const mark = drawFilmMark(marksLayer, filmShapes[film.studio], cx, cy, 4.2, { fill: STUDIO_COLOR[film.studio], class: "film-point", id: `view3-film-${film.film_id}`, "data-film-id": film.film_id, "data-release-year": film.release_year });
+    const group = appendSvg(marksLayer, "g", { class: "film-mark", "data-film-id": film.film_id, "data-release-year": film.release_year, "data-studio": film.studio });
+    appendSvg(group, "circle", { cx, cy, r: 11.5, class: "selection-ring" });
+    if (film.has_release_context_caveat) appendSvg(group, "circle", { cx, cy, r: 8.5, class: "exception-halo" });
+    const mark = drawFilmMark(group, filmShapes[film.studio], cx, cy, 4.2, {
+      fill: STUDIO_COLOR[film.studio], class: "film-point", id: `view3-film-${film.film_id}`,
+      "data-film-id": film.film_id, "data-release-year": film.release_year, role: "option",
+      "aria-label": `${film.title}, ${film.studio}, released ${formatDate(film.release_date)}, adjusted U.S. domestic gross ${formatAdjustedDomestic(film.domestic_box_office_usd_jul2026)}`
+    });
     appendSvg(mark, "title", {}, `${film.title}, ${film.studio}, ${formatUsdCompact(film.domestic_box_office_usd_jul2026)}`);
   });
   const sides = [
@@ -112,10 +121,10 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
     const rows = rollingDomestic.filter((row) => row.animated_side === side.name);
     const points = rows.map((row) => [x(new Date(`${row.window_end_year}-07-01T00:00:00Z`)), y(row.median_domestic_box_office_usd_jul2026)]);
     appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: colors.background, "stroke-width": 8, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-underlay" });
-    appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: side.color, "stroke-width": 4.5, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-line", "data-animated-side": side.name });
+    appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: side.color, "stroke-width": 4.5, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-line", "data-animated-side": side.name, tabindex: 0, role: "button", "aria-label": `Focus ${side.name} five-year trailing median trend` });
     const [lastX, lastY] = points.at(-1);
     appendSvg(svg, "line", { x1: lastX, x2: lastX + 14, y1: lastY, y2: lastY, stroke: side.color, "stroke-width": 3 });
-    appendSvg(svg, "text", { x: lastX + 20, y: lastY + 4, fill: side.color, class: "direct-line-label" }, side.name);
+    appendSvg(svg, "text", { x: lastX + 20, y: lastY + 4, fill: side.color, class: "direct-line-label", "data-animated-side": side.name }, side.name);
   });
   appendSvg(svg, "text", { x: width - margin.right, y: height - 12, "text-anchor": "end", class: "chart-note" }, labels.partial2026);
 }
@@ -124,9 +133,139 @@ export function initView3(container, { films, releaseCounts, rollingDomestic }) 
   if (!container) throw new Error("Missing container for View 3");
   const releaseHost = container.querySelector(".release-chart-host");
   const financialHost = container.querySelector(".financial-chart-host");
-  const stopRelease = observeContainer(releaseHost, (width) => renderReleaseChart(releaseHost, releaseCounts, width));
-  const stopFinancial = observeContainer(financialHost, (width) => renderFinancialChart(financialHost, films, rollingDomestic, width));
+  const detailHost = document.querySelector("#view-3-detail");
+  const animatedFilms = films.filter((film) => ANIMATED.has(film.corpus_assignment) && film.domestic_box_office_usd_jul2026 !== null);
+  const filmById = new Map(animatedFilms.map((film) => [film.film_id, film]));
+  const tooltip = createTooltip();
+  let activeFilmId = null;
+  let selectedFilmId = null;
+  let focusedSide = null;
+
+  financialHost.tabIndex = 0;
+  financialHost.setAttribute("role", "listbox");
+  financialHost.setAttribute("aria-label", "Explore 105 animated films chronologically. Use arrow keys to move, Enter or Space to select, and Escape to clear selection.");
+  financialHost.setAttribute("aria-describedby", "view-3-keyboard-instructions");
+
+  function markForFilm(filmId) {
+    return financialHost.querySelector(`#view3-film-${filmId}`);
+  }
+
+  function tooltipContent(film) {
+    let note = null;
+    if (film.film_id === "PIXAR_2020_SOUL") note = "Soul: U.S. gross reflects a later theatrical re-release.";
+    else if (film.has_release_context_caveat) note = `Release context: ${film.release_context.replaceAll("_", " ")}.`;
+    return {
+      title: film.title,
+      rows: [["Studio", film.studio], ["Release date", formatDate(film.release_date)], ["Adjusted U.S. domestic gross", formatAdjustedDomestic(film.domestic_box_office_usd_jul2026)]],
+      note
+    };
+  }
+
+  function applyReleaseSelection() {
+    const selected = filmById.get(selectedFilmId);
+    releaseHost.querySelectorAll(".release-segment").forEach((segment) => {
+      const matches = selected && Number(segment.dataset.releaseYear) === selected.release_year && segment.dataset.studio === selected.studio;
+      segment.classList.toggle("is-coordinated", Boolean(matches));
+      segment.classList.toggle("is-muted", Boolean(selected) && !matches);
+    });
+  }
+
+  function applyFinancialState() {
+    financialHost.querySelectorAll(".film-mark").forEach((group) => {
+      const isActive = group.dataset.filmId === activeFilmId;
+      const isSelected = group.dataset.filmId === selectedFilmId;
+      group.classList.toggle("is-active", isActive);
+      group.classList.toggle("is-selected", isSelected);
+      group.classList.toggle("is-deemphasized", Boolean(activeFilmId || focusedSide) && !isActive && !isSelected);
+      group.querySelector(".film-point")?.setAttribute("aria-selected", String(isSelected));
+    });
+    financialHost.querySelectorAll(".trend-line").forEach((line) => {
+      line.classList.toggle("is-focused", line.dataset.animatedSide === focusedSide);
+      line.classList.toggle("is-deemphasized", Boolean(focusedSide) && line.dataset.animatedSide !== focusedSide);
+    });
+    applyReleaseSelection();
+  }
+
+  function focusFilm(film, mark, showTooltip = true) {
+    activeFilmId = film.film_id;
+    applyFinancialState();
+    if (showTooltip && mark) tooltip.show(mark, tooltipContent(film));
+  }
+
+  function clearTemporaryFocus(mark = null) {
+    activeFilmId = null;
+    tooltip.hide(mark);
+    applyFinancialState();
+  }
+
+  function selectFilm(film, mark) {
+    selectedFilmId = film.film_id;
+    activeFilmId = film.film_id;
+    renderFilmDetail(detailHost, film);
+    applyFinancialState();
+    if (mark) tooltip.show(mark, tooltipContent(film));
+  }
+
+  function clearSelection() {
+    selectedFilmId = null;
+    renderFilmDetail(detailHost, null);
+    applyFinancialState();
+  }
+
+  function restoreDefault() {
+    activeFilmId = null;
+    focusedSide = null;
+    tooltip.hide();
+    clearSelection();
+  }
+
+  let navigation;
+  const stopRelease = observeContainer(releaseHost, (width) => {
+    renderReleaseChart(releaseHost, releaseCounts, width);
+    applyReleaseSelection();
+  });
+  const stopFinancial = observeContainer(financialHost, (width) => {
+    tooltip.hide();
+    renderFinancialChart(financialHost, films, rollingDomestic, width);
+    applyFinancialState();
+    navigation?.restore();
+  });
+  navigation = createFilmNavigation({
+    entry: financialHost, films: animatedFilms, elementForFilm: markForFilm,
+    onActive: focusFilm, onSelect: selectFilm, onClear: restoreDefault
+  });
+
+  financialHost.addEventListener("pointerover", (event) => {
+    const group = event.target.closest?.(".film-mark");
+    if (group) focusFilm(filmById.get(group.dataset.filmId), group.querySelector(".film-point"));
+    const sideTarget = event.target.closest?.("[data-animated-side]");
+    if (sideTarget) { focusedSide = sideTarget.dataset.animatedSide; applyFinancialState(); }
+  });
+  financialHost.addEventListener("pointerout", (event) => {
+    const group = event.target.closest?.(".film-mark");
+    if (group && !group.contains(event.relatedTarget)) clearTemporaryFocus(group.querySelector(".film-point"));
+    const sideTarget = event.target.closest?.("[data-animated-side]");
+    if (sideTarget && !sideTarget.contains(event.relatedTarget)) { focusedSide = null; applyFinancialState(); }
+  });
+  financialHost.addEventListener("click", (event) => {
+    const group = event.target.closest?.(".film-mark");
+    if (!group) return;
+    financialHost.focus({ preventScroll: true });
+    navigation.activateFilm(group.dataset.filmId, { announce: false });
+    selectFilm(filmById.get(group.dataset.filmId), group.querySelector(".film-point"));
+  });
+  financialHost.addEventListener("focusin", (event) => {
+    const side = event.target.dataset?.animatedSide;
+    if (side) { focusedSide = side; applyFinancialState(); }
+  });
+  financialHost.addEventListener("focusout", (event) => {
+    if (event.target.dataset?.animatedSide) { focusedSide = null; applyFinancialState(); }
+    if (event.target === financialHost) clearTemporaryFocus(markForFilm(activeFilmId));
+  });
+  financialHost.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") restoreDefault();
+  });
   container.dataset.viewStatus = "rendered";
-  container.dataset.keyboardArchitecture = "task-9-hook-no-mark-tab-stops";
-  return () => { stopRelease(); stopFinancial(); };
+  container.dataset.keyboardArchitecture = "one-entry-activedescendant";
+  return () => { stopRelease(); stopFinancial(); navigation.destroy(); tooltip.destroy(); };
 }

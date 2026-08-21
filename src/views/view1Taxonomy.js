@@ -47,7 +47,7 @@ export function initView1(container, { manifest }) {
     appendSvg(svg, "rect", { ...remake, rx: 14, class: "taxonomy-remake" });
     drawFilmMark(svg, filmShapes["Walt Disney Pictures"], remake.x + 26, remake.y + 33, 7, { fill: colors.disneyRemake });
     const remakeTextX = remake.x + (narrow ? 48 : 22);
-    const remakeTextY = remake.y + (narrow ? 25 : 82);
+    const remakeTextY = remake.y + (narrow ? 20 : 82);
     appendSvg(svg, "text", { x: remakeTextX, y: remakeTextY, class: "taxonomy-count", fill: colors.disneyRemake }, corpus.strategy_counts[labels.remakeLayer]);
     appendSvg(svg, "text", { x: remakeTextX, y: remakeTextY + 25, class: "taxonomy-label" }, "Disney remake/reimagining");
     appendSvg(svg, "text", { x: remakeTextX, y: remakeTextY + 42, class: "taxonomy-label" }, "layer");

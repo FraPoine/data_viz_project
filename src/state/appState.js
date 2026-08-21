@@ -1,5 +1,4 @@
 const INITIAL_STATE = Object.freeze({
-  selectedFilm: null,
   activeSection: null
 });
 

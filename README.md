@@ -8,9 +8,9 @@ The final visual story asks:
 
 ## Current status
 
-**Task 8 complete:** the approved core visual story is implemented with four responsive native-SVG views backed by the validated runtime data layer.
+**Task 9 complete:** the approved core visual story now includes controlled film exploration, contextual evidence detail, and local pointer/keyboard interaction.
 
-The default reading experience now includes the corpus taxonomy, early-rivalry timeline, coordinated release/performance view, strategy distribution, conclusion, and methodology disclosure. Task 9 is the next stage and will add the richer tooltip, selection, detail, and keyboard exploration layer without changing the default analytical story.
+The default reading experience remains complete without interaction. Optional depth now includes styled tooltips, focus states, persistent film selection, below-chart detail strips, View 3 release-year/studio coordination, aggregate-trend focus, and dense-chart arrow-key navigation. Task 10 is the next stage for formal final QA and submission readiness.
 
 ## Architecture
 
@@ -166,7 +166,7 @@ data_viz_project/
 │   └── serve.mjs
 └── src/
     ├── main.js
-    ├── components/
+    ├── components/                # Shared tooltip and film-detail renderers
     ├── config/
     ├── data/
     │   └── loadVisualizationData.js
@@ -216,4 +216,16 @@ Task 8 implements:
 - precomputed rolling lines and strategy medians: **implemented**;
 - persistent rivalry/release-context narrative: **implemented**.
 
-Task 9 remains responsible for production tooltips, persistent film selection/detail, coordinated highlighting, aggregate focus, and dense-chart roving keyboard navigation. Task 10 remains responsible for final QA, accessibility verification, and submission validation.
+## Controlled exploration
+
+Task 9 adds optional, view-local interaction without changing evidence or analytical populations:
+
+- all five View 2 films support pointer/keyboard focus and open approved source details;
+- Views 3 and 4 share restrained HTML tooltips for pointer and keyboard focus;
+- film selection is persistent within its own view and populates a below-chart detail strip;
+- View 3 selection coordinates only the selected film’s exact release year/studio bar segment;
+- View 3’s two approved aggregate trends support temporary focus;
+- Views 3 and 4 use one chart-level Tab entry with deterministic arrow-key film navigation rather than one Tab stop per point;
+- Enter/Space selects and Escape restores the default state.
+
+Task 10 remains responsible for formal final QA, accessibility verification, screen-reader audit, color-vision-deficiency testing, final responsive polish, the submission package, and deployment/final-delivery validation. Those activities are not yet complete.

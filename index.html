@@ -78,6 +78,7 @@
             <div class="chart-host" aria-live="polite"></div>
             <div class="annotation-list" aria-label="Persistent rivalry context"></div>
           </div>
+          <p class="keyboard-instructions">Focus or tap a timeline film, then press Enter or Space to open its approved evidence detail. Press Escape to close it.</p>
           <p class="figure-context">These cases were selected only after the systematic corpus was defined. They provide narrative context and do not determine film inclusion or create a quantitative rivalry-pair variable.</p>
         </figure>
       </section>
@@ -114,6 +115,7 @@
           <section class="temporal-component temporal-component--financial" aria-labelledby="commercial-panel-title">
             <h4 id="commercial-panel-title">B. Adjusted U.S. domestic theatrical performance</h4>
             <p>Small studio-shaped marks are individual films. Thick lines are the precomputed five-year trailing medians; missing gross is omitted, never treated as zero.</p>
+            <p id="view-3-keyboard-instructions" class="keyboard-instructions">Keyboard: Tab into film exploration, use arrow keys to move chronologically, Enter or Space to select, and Escape to clear. The two trend lines can also receive temporary focus.</p>
             <div class="financial-chart-host chart-host" aria-live="polite"></div>
           </section>
           <div class="caveat-grid" aria-label="Persistent interpretation caveats">
@@ -122,6 +124,7 @@
             <p><strong>2026*:</strong> Partial through 18 Aug; no extrapolation is applied.</p>
           </div>
         </figure>
+        <section id="view-3-detail" class="film-detail" aria-live="polite" hidden></section>
       </section>
 
       <section id="strategies" class="story-section story-section--secondary" aria-labelledby="strategies-title">
@@ -143,9 +146,11 @@
               Each available film is shown within its strategy group; dark markers show precomputed medians. The comparison is descriptive and does not establish that a strategy causes financial performance.
             </p>
           </figcaption>
+          <p id="view-4-keyboard-instructions" class="keyboard-instructions">Keyboard: Tab into film exploration, use arrow keys to move chronologically, Enter or Space to select, and Escape to clear.</p>
           <div class="chart-host" aria-live="polite"></div>
           <p class="figure-context">Studio shapes and colors identify films secondarily; the primary reading is the within-group distribution. Missing adjusted-domestic values are excluded rather than plotted at zero.</p>
         </figure>
+        <section id="view-4-detail" class="film-detail film-detail--compact" aria-live="polite" hidden></section>
       </section>
 
       <section id="takeaway" class="story-section story-section--conclusion" aria-labelledby="takeaway-title">

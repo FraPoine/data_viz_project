@@ -1,5 +1,8 @@
 import { VISUAL_SYSTEM } from "../config/visualSystem.js";
-import { formatUsdCompact } from "../utils/format.js";
+import { createTooltip } from "../components/tooltip.js";
+import { renderFilmDetail } from "../components/filmDetail.js";
+import { formatAdjustedDomestic, formatDate, formatUsdCompact } from "../utils/format.js";
+import { createFilmNavigation } from "../utils/focusNavigation.js";
 import { linearScale, roundedMoneyMaximum, stableJitter } from "../utils/scale.js";
 import { appendSvg, configureAccessibleSvg, createSvgElement, drawFilmMark } from "../utils/svg.js";
 import { observeContainer } from "../utils/resize.js";
@@ -11,7 +14,74 @@ const GROUP_ORDER = ["Animated first entry", "Animated franchise extension", "Di
 export function initView4(container, { films, strategySummary }) {
   if (!container) throw new Error("Missing container for View 4");
   const host = container.querySelector(".chart-host");
+  const detailHost = document.querySelector("#view-4-detail");
   const availableFilms = films.filter((film) => film.domestic_box_office_usd_jul2026 !== null);
+  const filmById = new Map(availableFilms.map((film) => [film.film_id, film]));
+  const tooltip = createTooltip();
+  let activeFilmId = null;
+  let selectedFilmId = null;
+
+  host.tabIndex = 0;
+  host.setAttribute("role", "listbox");
+  host.setAttribute("aria-label", "Explore films in the three strategy groups. Use arrow keys to move chronologically, Enter or Space to select, and Escape to clear selection.");
+  host.setAttribute("aria-describedby", "view-4-keyboard-instructions");
+
+  function markForFilm(filmId) {
+    return host.querySelector(`#view4-film-${filmId}`);
+  }
+
+  function applyState() {
+    host.querySelectorAll(".strategy-film-mark").forEach((group) => {
+      const isActive = group.dataset.filmId === activeFilmId;
+      const isSelected = group.dataset.filmId === selectedFilmId;
+      group.classList.toggle("is-active", isActive);
+      group.classList.toggle("is-selected", isSelected);
+      group.classList.toggle("is-deemphasized", Boolean(activeFilmId) && !isActive && !isSelected);
+      group.querySelector(".strategy-point")?.setAttribute("aria-selected", String(isSelected));
+    });
+  }
+
+  function tooltipContent(film) {
+    const note = film.has_release_context_caveat ? `Release context: ${film.release_context.replaceAll("_", " ")}.` : null;
+    return {
+      title: film.title,
+      rows: [["Studio", film.studio], ["Strategy group", film.strategy_group], ["Adjusted U.S. domestic gross", formatAdjustedDomestic(film.domestic_box_office_usd_jul2026)], ["Release date", formatDate(film.release_date)]],
+      note
+    };
+  }
+
+  function focusFilm(film, mark, showTooltip = true) {
+    activeFilmId = film.film_id;
+    applyState();
+    if (showTooltip && mark) tooltip.show(mark, tooltipContent(film));
+  }
+
+  function clearTemporaryFocus(mark = null) {
+    activeFilmId = null;
+    tooltip.hide(mark);
+    applyState();
+  }
+
+  function selectFilm(film, mark) {
+    selectedFilmId = film.film_id;
+    activeFilmId = film.film_id;
+    renderFilmDetail(detailHost, film, { includeStrategy: true, compact: true });
+    applyState();
+    if (mark) tooltip.show(mark, tooltipContent(film));
+  }
+
+  function clearSelection() {
+    selectedFilmId = null;
+    renderFilmDetail(detailHost, null);
+    applyState();
+  }
+
+  function restoreDefault() {
+    activeFilmId = null;
+    tooltip.hide();
+    clearSelection();
+  }
+
   const render = (availableWidth) => {
     host.replaceChildren();
     const narrow = availableWidth < 720;
@@ -43,15 +113,53 @@ export function initView4(container, { films, strategySummary }) {
       availableFilms.filter((film) => film.strategy_group === group).forEach((film) => {
         const cx = x(film.domestic_box_office_usd_jul2026);
         const cy = y + stableJitter(film.film_id, 25);
-        const mark = drawFilmMark(svg, filmShapes[film.studio], cx, cy, 4.2, { fill: STUDIO_COLOR[film.studio], class: "strategy-point", id: `view4-film-${film.film_id}`, "data-film-id": film.film_id });
+        const groupMark = appendSvg(svg, "g", { class: "strategy-film-mark", "data-film-id": film.film_id });
+        appendSvg(groupMark, "circle", { cx, cy, r: 11.5, class: "selection-ring" });
+        const mark = drawFilmMark(groupMark, filmShapes[film.studio], cx, cy, 4.2, {
+          fill: STUDIO_COLOR[film.studio], class: "strategy-point", id: `view4-film-${film.film_id}`,
+          "data-film-id": film.film_id, role: "option",
+          "aria-label": `${film.title}, ${film.studio}, ${film.strategy_group}, adjusted U.S. domestic gross ${formatAdjustedDomestic(film.domestic_box_office_usd_jul2026)}`
+        });
         appendSvg(mark, "title", {}, `${film.title}, ${group}, ${formatUsdCompact(film.domestic_box_office_usd_jul2026)}`);
       });
       const medianX = x(summary.median_domestic_box_office_usd_jul2026);
       appendSvg(svg, "line", { x1: medianX, x2: medianX, y1: y - 39, y2: y + 39, class: "median-marker" });
-      drawFilmMark(svg, "diamond", medianX, y, 7, { fill: colors.exceptionalRelease, class: "median-diamond" });
       appendSvg(svg, "text", { x: medianX, y: y - 45, "text-anchor": "middle", class: "median-label" }, `Median ${formatUsdCompact(summary.median_domestic_box_office_usd_jul2026)}`);
     });
+    applyState();
   };
+  let navigation;
+  const stopResize = observeContainer(host, (width) => {
+    tooltip.hide();
+    render(width);
+    navigation?.restore();
+  });
+  navigation = createFilmNavigation({
+    entry: host, films: availableFilms, elementForFilm: markForFilm,
+    onActive: focusFilm, onSelect: selectFilm, onClear: restoreDefault
+  });
+  host.addEventListener("pointerover", (event) => {
+    const group = event.target.closest?.(".strategy-film-mark");
+    if (group) focusFilm(filmById.get(group.dataset.filmId), group.querySelector(".strategy-point"));
+  });
+  host.addEventListener("pointerout", (event) => {
+    const group = event.target.closest?.(".strategy-film-mark");
+    if (group && !group.contains(event.relatedTarget)) clearTemporaryFocus(group.querySelector(".strategy-point"));
+  });
+  host.addEventListener("click", (event) => {
+    const group = event.target.closest?.(".strategy-film-mark");
+    if (!group) return;
+    host.focus({ preventScroll: true });
+    navigation.activateFilm(group.dataset.filmId, { announce: false });
+    selectFilm(filmById.get(group.dataset.filmId), group.querySelector(".strategy-point"));
+  });
+  host.addEventListener("focusout", (event) => {
+    if (event.target === host) clearTemporaryFocus(markForFilm(activeFilmId));
+  });
+  host.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") restoreDefault();
+  });
   container.dataset.viewStatus = "rendered";
-  return observeContainer(host, render);
+  container.dataset.keyboardArchitecture = "one-entry-activedescendant";
+  return () => { stopResize(); navigation.destroy(); tooltip.destroy(); };
 }

@@ -189,7 +189,7 @@ Each view owns its SVG layout and temporary interaction focus. Shared semantics 
 
 ### Detail components
 
-A shared persistent film-detail renderer should be introduced when Task 9 implements film selection. It should consume a selected film record and a context-specific allowed-field configuration; it must not expose every dataset field.
+Task 9 implements a shared persistent film-detail renderer and HTML tooltip. Each consumes an approved subset of a selected/focused film record; neither exposes every dataset field.
 
 ## 6. State Model
 
@@ -198,14 +198,8 @@ The interaction vocabulary is deliberately small.
 ### Shared application state
 
 ```text
-selectedFilm: null | {
-  viewId: "view-3" | "view-4",
-  filmId: string
-}
 activeSection: null | string
 ```
-
-`selectedFilm` is shared because the persistent detail component lives outside the SVG and only one persistent selection should be active at a time.
 
 `activeSection` is optional navigation state; it should be updated only if later navigation behavior needs it.
 
@@ -213,6 +207,7 @@ activeSection: null | string
 
 View 3:
 - temporarily focused film;
+- persistently selected View 3 film;
 - roving active-film index;
 - focused aggregate side (`Disney animated` / `DreamWorks` / null).
 
@@ -222,6 +217,9 @@ View 2:
 
 View 4:
 - temporary focused film.
+- persistently selected View 4 film.
+
+Film selection remains local to its owning view. View 2, View 3, and View 4 do not propagate selection or focus across sections.
 
 ### Native DOM state
 
