@@ -51,6 +51,9 @@
 .annotation-evidence ul { margin: 0; padding-left: var(--space-4); font-size: .8rem; }
 .annotation-evidence a { text-decoration-thickness: 1px; text-underline-offset: 2px; }
 .figure-context { max-width: var(--prose-max); margin-top: var(--space-4); }
+.analytical-takeaway { max-width: var(--prose-max); margin-top: var(--space-5); padding-left: var(--space-4); border-left: 2px solid var(--color-disney-aggregate); }
+.analytical-takeaway p { margin: 0; color: var(--color-text-secondary); font-size: .9rem; }
+.analytical-takeaway .analytical-takeaway__eyebrow { margin-bottom: var(--space-2); color: var(--color-text); font-size: .72rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
 .keyboard-instructions { max-width: var(--prose-max); margin: var(--space-3) 0 0; color: var(--color-text-secondary); font-size: .82rem; }
 .temporal-component { margin-top: var(--space-8); }
 .temporal-component + .temporal-component { padding-top: var(--space-8); border-top: 1px solid var(--color-grid); }

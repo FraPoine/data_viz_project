@@ -51,6 +51,10 @@ assert(html.indexOf('id="view-3-detail"') > html.indexOf('id="view-3"'), "View 3
 assert(html.indexOf('id="view-4-detail"') > html.indexOf('id="view-4"'), "View 4 detail strip must follow View 4");
 const view3Html = html.slice(html.indexOf('id="view-3"'), html.indexOf('id="view-3-detail"'));
 const view4Html = html.slice(html.indexOf('id="view-4"'), html.indexOf('id="view-4-detail"'));
+const conclusionHtml = html.slice(html.indexOf('id="takeaway"'), html.indexOf('id="methodology"'));
+assert(view3Html.includes('class="analytical-takeaway"') && view3Html.includes("mid-to-late 2010s") && view3Html.includes("pandemic-era disruption"), "View 3 analytical takeaway is missing or incomplete");
+assert(view4Html.includes('class="analytical-takeaway"') && view4Html.includes("franchise extensions") && view4Html.includes("prevent a causal interpretation"), "View 4 descriptive takeaway is missing or incomplete");
+assert(conclusionHtml.includes("Release counts describe activity") && conclusionHtml.includes("strategy-group distributions") && conclusionHtml.includes("permanent-winner conclusion"), "Conclusion is not aligned with the visualized evidence");
 assert(!/<div class="financial-chart-host chart-host"[^>]*aria-live=/i.test(view3Html), "View 3 film listbox host must not also be a live region");
 assert(!/<div class="chart-host"[^>]*aria-live=/i.test(view4Html), "View 4 film listbox host must not also be a live region");
 assert(/id="view-3-detail"[^>]*aria-live="polite"/i.test(html), "View 3 detail strip must remain a polite live region");
@@ -132,7 +136,7 @@ assert(view2Source.includes('LATER_CASE_ID = "later-thematic-overlap"') && view2
 assert(view2Source.includes('new Date("2004-12-31T00:00:00Z")'), "View 2 timeline must extend through 2004");
 assert(view2Source.includes("annotation-card__selector") && view2Source.includes("activateCase"), "View 2 bidirectional case selection is missing");
 assert(view2Source.includes("release-date maneuvering"), "Antz / A Bug's Life historical framing is missing");
-assert(view2Source.includes("rejecting the idea that the film represented a personal vendetta"), "Shrek's non-vendetta framing is missing");
+assert(view2Source.includes("rejected the personal-vendetta framing"), "Shrek's non-vendetta framing is missing");
 const rivalryData = JSON.parse(await readFile(path.join(ROOT, "public/data/derived/rivalry-annotations.json"), "utf8"));
 const expectedRivalryIds = ["DWA_1998_ANTZ", "PIXAR_1998_A_BUG_S_LIFE", "DWA_2000_THE_ROAD_TO_EL_DORADO", "WDAS_2000_THE_EMPEROR_S_NEW_GROOVE", "DWA_2001_SHREK"].sort();
 assert(rivalryData.length === 3, "The three approved rivalry annotation cases changed");

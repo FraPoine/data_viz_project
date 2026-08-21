@@ -7,8 +7,9 @@ import { observeContainer } from "../utils/resize.js";
 const { colors, filmShapes } = VISUAL_SYSTEM;
 const STUDIO_COLOR = { "Walt Disney Animation Studios": colors.wdas, "Pixar Animation Studios": colors.pixar, "DreamWorks Animation": colors.dreamworks };
 const EDITORIAL_ANNOTATION_COPY = Object.freeze({
-  "antz-bugs-life": "The strongest documented early rivalry case. The two 1998 ant-colony films were released less than two months apart amid contemporary reporting about their parallel premises and release-date maneuvering.",
-  "shrek-subversion": "Shrek deliberately overturned familiar fairy-tale conventions and was widely read through a Disney lens. Contemporary reporting also records Katzenberg rejecting the idea that the film represented a personal vendetta."
+  "antz-bugs-life": "These 1998 ant-colony films arrived less than two months apart amid contemporary reporting on their parallel premises and release-date maneuvering.",
+  "el-dorado-emperors-new-groove": "Similarities were noticed during production, but the documented relationship is less direct than in the 1998 case.",
+  "shrek-subversion": "Shrek's fairy-tale subversion was widely read through a Disney lens, without a paired Disney counterpart; Katzenberg rejected the personal-vendetta framing."
 });
 const LATER_CASE_ID = "later-thematic-overlap";
 
@@ -88,7 +89,7 @@ export function initView2(container, { films, rivalryAnnotations }) {
     contextual: true,
     film_ids: annotationHost.dataset.laterFilmIds.split(" "),
     evidence_framing: "Later thematic overlap · 2003–2004",
-    persistent_annotation: "Finding Nemo (2003) and Shark Tale (2004) occupy visibly similar thematic territory: both are family-oriented animated films built around underwater worlds and released about a year apart. This observed overlap does not establish copying, coordinated release strategy, or direct causal intent."
+    persistent_annotation: "Finding Nemo (2003) and Shark Tale (2004) are family animations set in underwater worlds. This thematic overlap is contextual only and does not establish copying, coordinated release strategy, or causal intent."
   };
   const cases = [...rivalryAnnotations, laterCase];
   renderAnnotations(annotationHost, cases, films);
