@@ -24,7 +24,6 @@
 .section-nav a:hover, .section-nav a:focus-visible { color: var(--color-link-hover); }
 .story-section { padding-block: var(--space-16) var(--space-24); border-top: 1px solid transparent; }
 .story-section--backbone { padding-block: var(--space-24); }
-.story-section--secondary { max-width: 68rem; margin-inline: auto; }
 .section-copy { max-width: var(--prose-max); }
 .section-copy h2 { margin: 0 0 var(--space-3); font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; }
 .section-copy p { margin: 0; color: var(--color-text-secondary); font-size: 1.05rem; }
@@ -60,7 +59,6 @@
 .takeaway-grid h3 { margin-top: 0; }
 .site-footer { padding-block: var(--space-8) var(--space-16); border-top: 1px solid var(--color-grid-subtle); color: var(--color-text-muted); font-size: 0.85rem; }
 @media (max-width: 68rem) {
-  .story-section--secondary { max-width: none; }
   .takeaway-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 50rem) {
