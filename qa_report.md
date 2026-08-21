@@ -32,9 +32,9 @@ View 3's film listbox and aggregate trends now have separate roles: SVG trend pa
 
 ## Color & Redundant Encoding
 
-Headless Chrome simulations were visually inspected for protanopia, deuteranopia, and achromatopsia. Frozen colors were retained. Studio shape redundancy (circle, triangle, square, diamond), Pixar hatch, direct trend labels, dashed exception halo, and solid selection ring remain distinguishable when color differences are reduced.
+Headless Chrome simulations were visually inspected for protanopia, deuteranopia, and achromatopsia. The subsequently approved Palette A retains studio shape redundancy (circle, triangle, square, diamond), Pixar hatch, direct trend labels, dashed exception halo, and solid selection ring so categories remain distinguishable when color differences are reduced.
 
-Calculated contrast ratios for key combinations were: body text on page background 15.42:1; secondary text on page background 5.80:1; secondary text on white 6.05:1; focus color on page background 9.13:1; and Disney aggregate text on page background 6.25:1. This was a targeted contrast check, not a full WCAG audit.
+Calculated Palette A contrast ratios for key combinations were: body text on page background 15.40:1; secondary text on page background 5.79:1; secondary text on white 6.05:1; focus color on page background 9.12:1; Disney aggregate on page background 7.66:1; and the dark DreamWorks direct-label color on white 7.38:1. This was a targeted contrast check, not a full WCAG audit.
 
 ## Responsive Review
 

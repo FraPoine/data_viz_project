@@ -115,8 +115,8 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
     appendSvg(mark, "title", {}, `${film.title}, ${film.studio}, ${formatUsdCompact(film.domestic_box_office_usd_jul2026)}`);
   });
   const sides = [
-    { name: labels.disneyAnimatedAggregate, color: colors.disneyAnimatedAggregate },
-    { name: "DreamWorks", color: colors.dreamworks }
+    { name: labels.disneyAnimatedAggregate, color: colors.disneyAnimatedAggregate, labelColor: colors.disneyAnimatedAggregate },
+    { name: "DreamWorks", color: colors.dreamworks, labelColor: colors.dreamworksDark }
   ];
   sides.forEach((side) => {
     const rows = rollingDomestic.filter((row) => row.animated_side === side.name);
@@ -125,7 +125,7 @@ function renderFinancialChart(host, films, rollingDomestic, availableWidth) {
     appendSvg(svg, "path", { d: linePath(points), fill: "none", stroke: side.color, "stroke-width": 4.5, "stroke-linejoin": "round", "stroke-linecap": "round", class: "trend-line", "data-animated-side": side.name });
     const [lastX, lastY] = points.at(-1);
     appendSvg(svg, "line", { x1: lastX, x2: lastX + 14, y1: lastY, y2: lastY, stroke: side.color, "stroke-width": 3 });
-    appendSvg(svg, "text", { x: lastX + 20, y: lastY + 4, fill: side.color, class: "direct-line-label", "data-animated-side": side.name }, side.name);
+    appendSvg(svg, "text", { x: lastX + 20, y: lastY + 4, fill: side.labelColor, class: "direct-line-label", "data-animated-side": side.name }, side.name);
   });
   appendSvg(svg, "text", { x: width - margin.right, y: height - 12, "text-anchor": "end", class: "chart-note" }, labels.partial2026);
 }

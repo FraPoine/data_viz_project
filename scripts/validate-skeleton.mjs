@@ -50,12 +50,28 @@ assert(/id="view-3-detail"[^>]*aria-live="polite"/i.test(html), "View 3 detail s
 assert(/id="view-4-detail"[^>]*aria-live="polite"/i.test(html), "View 4 detail strip must remain a polite live region");
 assert(!/<(?:select|input)[\s>]/i.test(html), "Global filter controls are not allowed");
 
-assert(VISUAL_SYSTEM.colors.wdas === "#2F6FB0", "WDAS color drifted from Design Freeze");
-assert(VISUAL_SYSTEM.colors.pixar === "#A94F8A", "Pixar color drifted from Design Freeze");
-assert(VISUAL_SYSTEM.colors.dreamworks === "#007C7C", "DreamWorks color drifted from Design Freeze");
-assert(VISUAL_SYSTEM.colors.disneyAnimatedAggregate === "#6F4AA8", "Disney aggregate color drifted");
-assert(VISUAL_SYSTEM.colors.disneyRemake === "#A65E1A", "Remake color drifted");
+assert(VISUAL_SYSTEM.colors.wdas === "#315A9E", "WDAS color drifted from Palette A");
+assert(VISUAL_SYSTEM.colors.pixar === "#9A5B9E", "Pixar color drifted from Palette A");
+assert(VISUAL_SYSTEM.colors.dreamworks === "#168A96", "DreamWorks color drifted from Palette A");
+assert(VISUAL_SYSTEM.colors.disneyAnimatedAggregate === "#51468F", "Disney aggregate color drifted from Palette A");
+assert(VISUAL_SYSTEM.colors.disneyRemake === "#B9772A", "Remake color drifted from Palette A");
+assert(VISUAL_SYSTEM.colors.exceptionalRelease === "#3F4650", "Exception color drifted from Palette A");
+assert(VISUAL_SYSTEM.colors.background === "#FAFAF8", "Page background drifted from Palette A");
+assert(VISUAL_SYSTEM.colors.grid === "#D8DDE3", "Grid color drifted from Palette A");
 assert(VISUAL_SYSTEM.filmShapes["Pixar Animation Studios"] === "triangle-up", "Pixar shape drifted");
+const tokenSource = (await readFile(path.join(ROOT, "src/styles/tokens.css"), "utf8")).toUpperCase();
+for (const [token, value] of Object.entries({
+  "--COLOR-BG": "#FAFAF8",
+  "--COLOR-WDAS": "#315A9E",
+  "--COLOR-PIXAR": "#9A5B9E",
+  "--COLOR-DREAMWORKS": "#168A96",
+  "--COLOR-DISNEY-AGGREGATE": "#51468F",
+  "--COLOR-REMAKE": "#B9772A",
+  "--COLOR-EXCEPTION": "#3F4650",
+  "--COLOR-GRID": "#D8DDE3"
+})) {
+  assert(tokenSource.includes(`${token}: ${value}`), `${token} CSS token drifted from Palette A`);
+}
 assert(DATA_CONTRACT.files.films === "films.json", "Data contract is malformed");
 
 const store = createAppState();

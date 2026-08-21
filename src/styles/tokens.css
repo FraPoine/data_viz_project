@@ -1,18 +1,24 @@
 :root {
   color-scheme: light;
 
-  --color-bg: #fbfaf7;
+  --color-bg: #fafaf8;
   --color-surface: #ffffff;
   --color-text: #202124;
   --color-text-secondary: #5f6368;
-  --color-wdas: #2f6fb0;
-  --color-pixar: #a94f8a;
-  --color-dreamworks: #007c7c;
-  --color-disney-aggregate: #6f4aa8;
-  --color-remake: #a65e1a;
+  --color-wdas: #315a9e;
+  --color-disney-dark: #203864;
+  --color-disney-light: #afc7e8;
+  --color-disney-gold: #d6a84b;
+  --color-pixar: #9a5b9e;
+  --color-dreamworks: #168a96;
+  --color-dreamworks-dark: #075f68;
+  --color-dreamworks-light: #a9d9dd;
+  --color-dreamworks-sky: #55b5d9;
+  --color-disney-aggregate: #51468f;
+  --color-remake: #b9772a;
   --color-exception: #3f4650;
-  --color-neutral: #9aa3ae;
-  --color-grid: #d9dee5;
+  --color-neutral: #d8dde3;
+  --color-grid: #d8dde3;
 
   --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 

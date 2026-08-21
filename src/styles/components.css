@@ -16,11 +16,11 @@
 .chart-grid { stroke: var(--color-grid); stroke-width: 1; }
 .chart-grid--subtle { opacity: 0.55; }
 .row-label, .film-label, .strategy-label, .direct-line-label { font-weight: 700; }
-.taxonomy-container { fill: #f7f5fb; stroke: var(--color-disney-aggregate); stroke-width: 1.3; }
+.taxonomy-container { fill: color-mix(in srgb, var(--color-disney-light) 18%, white); stroke: var(--color-disney-aggregate); stroke-width: 1.3; }
 .taxonomy-subcontainer { stroke-width: 1.2; }
-.taxonomy-subcontainer--disney { fill: #f4f0fa; stroke: var(--color-disney-aggregate); }
-.taxonomy-subcontainer--dwa { fill: #edf7f6; stroke: var(--color-dreamworks); }
-.taxonomy-remake { fill: #fbf3eb; stroke: var(--color-remake); stroke-width: 1.3; }
+.taxonomy-subcontainer--disney { fill: color-mix(in srgb, var(--color-disney-light) 28%, white); stroke: var(--color-disney-aggregate); }
+.taxonomy-subcontainer--dwa { fill: color-mix(in srgb, var(--color-dreamworks-light) 28%, white); stroke: var(--color-dreamworks); }
+.taxonomy-remake { fill: color-mix(in srgb, var(--color-disney-gold) 18%, white); stroke: var(--color-remake); stroke-width: 1.3; }
 .taxonomy-count { font-size: 24px !important; font-weight: 750; }
 .taxonomy-label { font-size: 12px !important; font-weight: 700; }
 .rivalry-composition { width: 100%; }

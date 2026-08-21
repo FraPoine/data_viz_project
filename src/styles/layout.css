@@ -30,7 +30,7 @@
   margin-top: var(--space-8);
   padding: var(--space-4) var(--space-6);
   border-radius: var(--radius-md);
-  background: #f1eff7;
+  background: color-mix(in srgb, var(--color-disney-light) 22%, white);
   color: var(--color-text);
   font-size: 0.95rem;
 }
