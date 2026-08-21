@@ -41,6 +41,18 @@
 .annotation-evidence ul { margin: 0; padding-left: var(--space-4); font-size: .8rem; }
 .annotation-evidence a { text-decoration-thickness: 1px; text-underline-offset: 2px; }
 .figure-context { max-width: var(--prose-max); margin-top: var(--space-4); }
+.later-context { margin-top: var(--space-6); padding: var(--space-4) var(--space-6); border: 1px solid var(--color-grid); border-radius: var(--radius-md); background: #f8f8f6; }
+.later-context__eyebrow { margin: 0; color: var(--color-text-secondary); font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.later-context h3 { margin: .2rem 0 var(--space-3); font-size: 1.05rem; }
+.later-context__films { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: var(--space-4); align-items: center; }
+.later-context__film { display: grid; grid-template-columns: 1rem 1fr; column-gap: var(--space-3); align-items: center; padding: var(--space-3) var(--space-4); border-left: 2px solid var(--color-neutral); background: var(--color-surface); }
+.later-context__film h4 { margin: 0; font-size: .95rem; }
+.later-context__film p { grid-column: 2; margin: .1rem 0 0; color: var(--color-text-secondary); font-size: .8rem; }
+.later-context__marker { display: inline-block; justify-self: center; }
+.later-context__marker--pixar { width: 0; height: 0; border-right: 6px solid transparent; border-bottom: 11px solid var(--color-pixar); border-left: 6px solid transparent; }
+.later-context__marker--dreamworks { width: 10px; height: 10px; background: var(--color-dreamworks); }
+.later-context__connection { margin: 0; color: var(--color-text-secondary); font-size: .75rem; font-weight: 650; text-align: center; }
+.later-context__copy { max-width: var(--prose-max); margin: var(--space-3) 0 0; color: var(--color-text-secondary); font-size: .84rem; }
 .keyboard-instructions { max-width: var(--prose-max); margin: var(--space-3) 0 0; color: var(--color-text-secondary); font-size: .82rem; }
 .temporal-component { margin-top: var(--space-8); }
 .temporal-component + .temporal-component { padding-top: var(--space-8); border-top: 1px solid var(--color-grid); }
@@ -114,7 +126,8 @@
 }
 @media (max-width: 50rem) {
   .view-shell { padding: var(--space-4); }
-  .annotation-list, .caveat-grid { grid-template-columns: 1fr; }
+  .annotation-list, .caveat-grid, .later-context__films { grid-template-columns: 1fr; }
+  .later-context__connection { padding-block: var(--space-1); }
   .chart-host { overflow-x: auto; }
   .chart-host .chart { min-width: 36rem; }
   .chart--taxonomy { min-width: 30rem !important; }

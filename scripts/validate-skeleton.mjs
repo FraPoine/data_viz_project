@@ -27,6 +27,10 @@ for (const id of sectionIds) {
   assert(currentIndex > previousIndex, `Section ${id} is missing or out of order`);
   previousIndex = currentIndex;
 }
+const rivalryHtml = html.slice(html.indexOf('id="rivalry"'), html.indexOf('id="balance"'));
+assert(rivalryHtml.includes('data-later-film-id="PIXAR_2003_FINDING_NEMO"'), "Finding Nemo later context is missing from the rivalry section");
+assert(rivalryHtml.includes('data-later-film-id="DWA_2004_SHARK_TALE"'), "Shark Tale later context is missing from the rivalry section");
+assert(rivalryHtml.includes("does not establish copying"), "Later rivalry context needs explicit non-causal framing");
 
 const viewRootCount = (html.match(/data-view-module=/g) || []).length;
 assert(viewRootCount === 4, `Expected exactly 4 approved view roots, found ${viewRootCount}`);

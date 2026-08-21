@@ -43,10 +43,27 @@ function renderAnnotations(host, annotations) {
   }));
 }
 
+function renderLaterContext(container, films) {
+  const filmById = new Map(films.map((film) => [film.film_id, film]));
+  container.querySelectorAll("[data-later-film-id]").forEach((article) => {
+    const film = filmById.get(article.dataset.laterFilmId);
+    if (!film) throw new Error(`A later rivalry-context film could not be resolved: ${article.dataset.laterFilmId}`);
+    const marker = document.createElement("span");
+    marker.className = `later-context__marker later-context__marker--${film.studio === "Pixar Animation Studios" ? "pixar" : "dreamworks"}`;
+    marker.setAttribute("aria-hidden", "true");
+    const title = document.createElement("h4");
+    title.textContent = film.title;
+    const metadata = document.createElement("p");
+    metadata.textContent = `${film.release_year} · ${film.studio}`;
+    article.replaceChildren(marker, title, metadata);
+  });
+}
+
 export function initView2(container, { films, rivalryAnnotations }) {
   if (!container) throw new Error("Missing container for View 2");
   const chartHost = container.querySelector(".chart-host");
   renderAnnotations(container.querySelector(".annotation-list"), rivalryAnnotations);
+  renderLaterContext(container.closest("#rivalry"), films);
   const contextualFilmIds = new Set(rivalryAnnotations.flatMap((annotation) => annotation.film_ids));
   const caseFilms = films.filter((film) => contextualFilmIds.has(film.film_id));
   if (caseFilms.length !== contextualFilmIds.size) throw new Error("A View 2 rivalry annotation film could not be resolved");
