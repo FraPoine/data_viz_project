@@ -10,6 +10,26 @@ The final visual story asks:
 
 The approved visual story, controlled exploration layer, final QA hardening, accessibility review, and submission documentation are complete. The default reading experience remains complete without interaction; optional depth includes tooltips, focus states, persistent local film selection, below-chart detail strips, View 3 release-year/studio coordination, aggregate-trend focus, and dense-chart arrow navigation.
 
+## Quick start
+
+After extracting the project ZIP archive, open a terminal in the project root directory (the folder containing `package.json`).
+
+Do not open `index.html` directly from the filesystem. The project uses JavaScript ES modules and runtime-loaded JSON data, so it must be started through the provided local server.
+
+Run:
+
+```bash
+npm install
+python3 -m pip install -r requirements-data.txt
+npm run dev
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5173
+```
+
 ## Architecture
 
 - semantic HTML;
