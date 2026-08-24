@@ -28,9 +28,11 @@ for (const id of sectionIds) {
   previousIndex = currentIndex;
 }
 const rivalryHtml = html.slice(html.indexOf('id="rivalry"'), html.indexOf('id="balance"'));
+const rivalryPreludeHtml = html.slice(html.indexOf("Before the rivalry"), html.indexOf('id="rivalry"'));
 assert(rivalryHtml.includes('class="rivalry-case-list annotation-list"'), "Unified rivalry case list is missing from View 2");
 assert(rivalryHtml.includes('data-later-film-ids="PIXAR_2003_FINDING_NEMO DWA_2004_SHARK_TALE"'), "Finding Nemo and Shark Tale later context is missing from the rivalry list");
 assert(!rivalryHtml.includes('class="later-context"'), "Obsolete standalone later-context block remains");
+assert(rivalryPreludeHtml.includes("The Prince of Egypt") && rivalryPreludeHtml.includes("high-stakes test"), "The Prince of Egypt ambition context is missing from the rivalry prelude");
 const narrativeText = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
 for (const requiredContext of ["DreamWorks SKG", "Steven Spielberg", "Jeffrey Katzenberg", "David Geffen", "full animated corpus", "2006", "2010 onward"]) {
   assert(narrativeText.includes(requiredContext), `Required historical narrative context is missing: ${requiredContext}`);
@@ -138,13 +140,16 @@ assert(!/class: "trend-line"[^\n]+tabindex/.test(view3Source), "View 3 trend pat
 assert(view3Source.includes('querySelector(".trend-focus-controls")'), "View 3 separate aggregate trend controls are missing");
 const view2Source = await readFile(path.join(ROOT, "src/views/view2RivalryTimeline.js"), "utf8");
 assert(!view2Source.includes("CASE_FILMS"), "View 2 must derive contextual films from runtime annotations");
+assert(!view2Source.includes("The Prince of Egypt"), "The Prince of Egypt must remain contextual prelude copy, not a View 2 case or timeline mark");
 assert(view2Source.includes("cases.flatMap"), "View 2 runtime film-ID derivation is missing");
 assert(view2Source.includes("restoreFocusedFilmId"), "View 2 responsive focus restoration is missing");
-assert(view2Source.includes('LATER_CASE_ID = "later-thematic-overlap"') && view2Source.includes("does not establish copying"), "Fourth rivalry item or its non-causal framing is missing");
+assert(view2Source.includes('LATER_CASE_ID = "later-thematic-overlap"') && view2Source.includes("not evidence of copying or causal rivalry"), "Fourth rivalry item or its non-causal framing is missing");
 assert(view2Source.includes('new Date("2004-12-31T00:00:00Z")'), "View 2 timeline must extend through 2004");
 assert(view2Source.includes("annotation-card__selector") && view2Source.includes("activateCase"), "View 2 bidirectional case selection is missing");
 assert(view2Source.includes("release-date maneuvering"), "Antz / A Bug's Life historical framing is missing");
-assert(view2Source.includes("rejected the personal-vendetta framing"), "Shrek's non-vendetta framing is missing");
+assert(view2Source.includes("Kingdom of the Sun") && view2Source.includes("story and schedule problems") && view2Source.includes("no evidence it caused Disney's redesign"), "Case 02 production chronology or causal limitation is missing");
+assert(view2Source.includes("Duloc") && view2Source.includes("theme-park satire") && view2Source.includes("rejected a personal-vendetta interpretation"), "Shrek's concrete Disney-context or non-vendetta framing is missing");
+assert(view2Source.includes("Developed concurrently") && view2Source.includes("similarities as coincidental") && view2Source.includes("open with Pixar to avoid overlap"), "Finding Nemo / Shark Tale coincidence framing is missing");
 const rivalryData = JSON.parse(await readFile(path.join(ROOT, "public/data/derived/rivalry-annotations.json"), "utf8"));
 const expectedRivalryIds = ["DWA_1998_ANTZ", "PIXAR_1998_A_BUG_S_LIFE", "DWA_2000_THE_ROAD_TO_EL_DORADO", "WDAS_2000_THE_EMPEROR_S_NEW_GROOVE", "DWA_2001_SHREK"].sort();
 assert(rivalryData.length === 3, "The three approved rivalry annotation cases changed");

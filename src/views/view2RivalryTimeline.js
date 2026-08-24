@@ -8,8 +8,8 @@ const { colors, filmShapes } = VISUAL_SYSTEM;
 const STUDIO_COLOR = { "Walt Disney Animation Studios": colors.wdas, "Pixar Animation Studios": colors.pixar, "DreamWorks Animation": colors.dreamworks };
 const EDITORIAL_ANNOTATION_COPY = Object.freeze({
   "antz-bugs-life": "These 1998 ant-colony films arrived less than two months apart amid contemporary reporting on their parallel premises and release-date maneuvering.",
-  "el-dorado-emperors-new-groove": "Similarities were noticed during production, but the documented relationship is less direct than in the 1998 case.",
-  "shrek-subversion": "Shrek's fairy-tale subversion was widely read through a Disney lens, without a paired Disney counterpart; Katzenberg rejected the personal-vendetta framing."
+  "el-dorado-emperors-new-groove": "Disney's film began as Kingdom of the Sun. Internal story and schedule problems drove a major 1998 overhaul; El Dorado's similar setting fueled rivalry comparisons, but there is no evidence it caused Disney's redesign.",
+  "shrek-subversion": "Shrek twists familiar fairy-tale icons and turns Duloc into a squeaky-clean theme-park satire that critics read through a Disney lens. With no paired Disney counterpart, Katzenberg called the jabs playful and rejected a personal-vendetta interpretation."
 });
 const LATER_CASE_ID = "later-thematic-overlap";
 
@@ -89,7 +89,7 @@ export function initView2(container, { films, rivalryAnnotations }) {
     contextual: true,
     film_ids: annotationHost.dataset.laterFilmIds.split(" "),
     evidence_framing: "Later thematic overlap · 2003–2004",
-    persistent_annotation: "Finding Nemo (2003) and Shark Tale (2004) are family animations set in underwater worlds. This thematic overlap is contextual only and does not establish copying, coordinated release strategy, or causal intent."
+    persistent_annotation: "Developed concurrently, Finding Nemo (2003) and Shark Tale (2004) invite comparison as underwater family animations. Katzenberg publicly described the similarities as coincidental and said DreamWorks had been open with Pixar to avoid overlap; this remains thematic context, not evidence of copying or causal rivalry."
   };
   const cases = [...rivalryAnnotations, laterCase];
   renderAnnotations(annotationHost, cases, films);
