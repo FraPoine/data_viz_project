@@ -10,7 +10,7 @@
   "supporting_sources": {
     "rivalry_cases": {
       "file": "rivalry_cases.md",
-      "sha256": "05e0308ef9d728466c6c794433733d8c0b1e5e8c2bbd95e7042d32edca286f37"
+      "sha256": "f2242821206c6d18a2cdc12beed191387ebcd5a77350d84b277e41e25076777b"
     }
   },
   "corpus": {
@@ -59,8 +59,8 @@
     },
     "rivalry-annotations.json": {
       "records": 3,
-      "sha256": "4bb1495db4dd5e74de7c9d656644100f934610f6e141afe5d4b7234689dcae3a",
-      "bytes": 2362
+      "sha256": "b4fe0c3baebac5f7353a3ec6d7141049e27d46f706f05039f10c8d8769acc4f1",
+      "bytes": 2602
     }
   },
   "generation": {

@@ -27,7 +27,7 @@ These cases are narrative annotations only. They do not alter film inclusion, do
 - **Documented relationship:** production-history reporting records that similarities were noticed during production and includes testimony describing a race to release; the evidence remains less direct than for *Antz* / *A Bug's Life*.
 - **Narrative use:** cautious production-era comparison, not a quantitative rivalry pair.
 - **Evidence strength:** moderate.
-- **Cross-check:** https://en.wikipedia.org/wiki/The_Emperor%27s_New_Groove (section citing contemporaneous reporting)
+- **Production-history interview:** https://am.animatedviews.com/TheEmperorsNewGroove.html
 
 ## Shrek (2001)
 
@@ -37,7 +37,8 @@ These cases are narrative annotations only. They do not alter film inclusion, do
 - **Documented relationship:** contemporary Cannes reporting described the film as irreverent and subversive, noted that it had been interpreted as an attack on Disney, and recorded Jeffrey Katzenberg rejecting a personal-vendetta interpretation.
 - **Narrative use:** supports a sourced discussion of DreamWorks differentiating itself through fairy-tale parody/subversion. It must not become a causal variable or invented one-to-one pair.
 - **Evidence strength:** high for the subversion/Disney-context annotation.
-- **Contemporary evidence:** https://www.wired.com/2001/05/cannes-fairy-tales/
+- **Contemporary Cannes / non-vendetta evidence:** https://www.wired.com/2001/05/cannes-fairy-tales/
+- **Contemporary Duloc / Disney-context evidence:** https://www.washingtonpost.com/archive/lifestyle/2001/03/31/a-tale-of-two-studios/95dfada9-16f9-4052-a4d9-4f9d76dd222b/
 
 ## Anti-cherry-picking rule
 

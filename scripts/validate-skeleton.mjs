@@ -33,6 +33,8 @@ assert(rivalryHtml.includes('class="rivalry-case-list annotation-list"'), "Unifi
 assert(rivalryHtml.includes('data-later-film-ids="PIXAR_2003_FINDING_NEMO DWA_2004_SHARK_TALE"'), "Finding Nemo and Shark Tale later context is missing from the rivalry list");
 assert(!rivalryHtml.includes('class="later-context"'), "Obsolete standalone later-context block remains");
 assert(rivalryPreludeHtml.includes("The Prince of Egypt") && rivalryPreludeHtml.includes("high-stakes test"), "The Prince of Egypt ambition context is missing from the rivalry prelude");
+assert(html.includes("Los Angeles Times — <em>The Prince of Egypt</em> as a major DreamWorks gamble"), "The Prince of Egypt claim lacks independent provenance");
+assert(html.includes("Animated Views — <em>Shark Tale</em> / <em>Finding Nemo</em> overlap reporting"), "Finding Nemo / Shark Tale coincidence framing lacks independent provenance");
 const narrativeText = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
 for (const requiredContext of ["DreamWorks SKG", "Steven Spielberg", "Jeffrey Katzenberg", "David Geffen", "full animated corpus", "2006", "2010 onward"]) {
   assert(narrativeText.includes(requiredContext), `Required historical narrative context is missing: ${requiredContext}`);
@@ -153,6 +155,10 @@ assert(view2Source.includes("Developed concurrently") && view2Source.includes("s
 const rivalryData = JSON.parse(await readFile(path.join(ROOT, "public/data/derived/rivalry-annotations.json"), "utf8"));
 const expectedRivalryIds = ["DWA_1998_ANTZ", "PIXAR_1998_A_BUG_S_LIFE", "DWA_2000_THE_ROAD_TO_EL_DORADO", "WDAS_2000_THE_EMPEROR_S_NEW_GROOVE", "DWA_2001_SHREK"].sort();
 assert(rivalryData.length === 3, "The three approved rivalry annotation cases changed");
+const elDoradoSources = rivalryData.find((annotation) => annotation.annotation_id === "el-dorado-emperors-new-groove")?.sources ?? [];
+const shrekSources = rivalryData.find((annotation) => annotation.annotation_id === "shrek-subversion")?.sources ?? [];
+assert(elDoradoSources.some((source) => source.label.includes("production-history interview")), "Case 02 lacks direct production-history provenance");
+assert(shrekSources.some((source) => source.label.includes("non-vendetta")) && shrekSources.some((source) => source.label.includes("Duloc")), "Shrek lacks provenance for both non-vendetta and Duloc context");
 assert(rivalryData.flatMap((annotation) => annotation.film_ids).sort().join("|") === expectedRivalryIds.join("|"), "The approved five-film rivalry timeline population changed");
 const laterRivalryIds = rivalryHtml.match(/data-later-film-ids="([^"]+)"/)?.[1].split(" ") ?? [];
 assert(laterRivalryIds.sort().join("|") === ["DWA_2004_SHARK_TALE", "PIXAR_2003_FINDING_NEMO"].sort().join("|"), "The contextual Finding Nemo / Shark Tale pair changed");

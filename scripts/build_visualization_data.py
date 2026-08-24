@@ -83,8 +83,8 @@ RIVALRY_ANNOTATIONS = [
         "evidence_framing": "More cautious production-era comparison",
         "sources": [
             {
-                "label": "Cross-check cited by the frozen rivalry methodology",
-                "url": "https://en.wikipedia.org/wiki/The_Emperor%27s_New_Groove",
+                "label": "Animated Views — Emperor's New Groove production-history interview",
+                "url": "https://am.animatedviews.com/TheEmperorsNewGroove.html",
             }
         ],
     },
@@ -97,8 +97,12 @@ RIVALRY_ANNOTATIONS = [
         "evidence_framing": "Disney-context subversion — no paired counterpart",
         "sources": [
             {
-                "label": "Wired — contemporary Cannes reporting",
+                "label": "WIRED — contemporary Cannes and non-vendetta reporting",
                 "url": "https://www.wired.com/2001/05/cannes-fairy-tales/",
+            },
+            {
+                "label": "Washington Post — contemporary Duloc and Disney-context reporting",
+                "url": "https://www.washingtonpost.com/archive/lifestyle/2001/03/31/a-tale-of-two-studios/95dfada9-16f9-4052-a4d9-4f9d76dd222b/",
             }
         ],
     },
