@@ -121,8 +121,6 @@
 .film-detail__grid dt { color: var(--color-text-secondary); font-size: .76rem; font-weight: 650; text-transform: uppercase; letter-spacing: .03em; }
 .film-detail__grid dd { margin: .2rem 0 0; font-size: .9rem; font-weight: 600; }
 .film-detail__note { margin: var(--space-4) 0 0; padding-top: var(--space-3); border-top: 1px solid var(--color-grid); color: var(--color-text-secondary); font-size: .86rem; }
-.film-detail--compact .film-detail__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
 @media (max-width: 62rem) {
   .annotation-list { grid-template-columns: 1fr; }
 }
@@ -132,5 +130,5 @@
   .chart-host { overflow-x: auto; }
   .chart-host .chart { min-width: 36rem; }
   .chart--taxonomy { min-width: 30rem !important; }
-  .film-detail__grid, .film-detail--compact .film-detail__grid { grid-template-columns: 1fr; }
+  .film-detail__grid { grid-template-columns: 1fr; }
 }

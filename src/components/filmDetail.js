@@ -4,7 +4,7 @@ function readable(value) {
   return value ? String(value).replaceAll("_", " ") : "Not available";
 }
 
-export function renderFilmDetail(host, film, { includeStrategy = false, compact = false } = {}) {
+export function renderFilmDetail(host, film, { includeStrategy = false } = {}) {
   host.replaceChildren();
   if (!film) {
     host.hidden = true;
@@ -17,17 +17,13 @@ export function renderFilmDetail(host, film, { includeStrategy = false, compact 
   const rows = [
     ["Studio", film.studio],
     ["Release date", formatDate(film.release_date)],
-    ["Adjusted U.S. domestic gross", formatAdjustedDomestic(film.domestic_box_office_usd_jul2026)]
+    ["Adjusted U.S. domestic gross", formatAdjustedDomestic(film.domestic_box_office_usd_jul2026)],
+    ["Worldwide gross", formatNominalWorldwide(film.worldwide_box_office_usd_nominal)],
+    ["Reported production budget", film.production_budget_usd_nominal === null ? "Not available" : `${formatUsdCompact(film.production_budget_usd_nominal)} (reported estimate)`],
+    ["Franchise status", readable(film.franchise_status)],
+    ["Release context", readable(film.release_context)]
   ];
   if (includeStrategy) rows.push(["Strategy group", film.strategy_group]);
-  if (!compact) {
-    rows.push(
-      ["Worldwide gross", formatNominalWorldwide(film.worldwide_box_office_usd_nominal)],
-      ["Reported production budget", film.production_budget_usd_nominal === null ? "Not available" : `${formatUsdCompact(film.production_budget_usd_nominal)} (reported estimate)`],
-      ["Franchise status", readable(film.franchise_status)],
-      ["Release context", readable(film.release_context)]
-    );
-  }
   for (const [label, value] of rows) {
     const term = document.createElement("dt");
     term.textContent = label;

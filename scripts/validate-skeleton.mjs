@@ -45,6 +45,7 @@ assert(!html.toLowerCase().includes("implementation placeholder"), "Task 8 view 
 assert([initView1, initView2, initView3, initView4].every((init) => typeof init === "function"), "A Task 8 view module does not export an initializer");
 assert([createTooltip, renderFilmDetail, createFilmNavigation].every((item) => typeof item === "function"), "A shared Task 9 interaction module is missing");
 assert(html.includes('id="view-3-detail"') && html.includes('id="view-4-detail"'), "Below-chart film detail strips are missing");
+assert(/id="view-3-detail" class="film-detail"/.test(html) && /id="view-4-detail" class="film-detail"/.test(html), "View 3 and View 4 must share the same film-detail structure");
 assert(html.includes('id="view-3-keyboard-instructions"') && html.includes('id="view-4-keyboard-instructions"'), "Dense-chart keyboard instructions are missing");
 assert(html.includes('class="trend-focus-controls"'), "View 3 aggregate trend controls must be semantically separate from the film explorer");
 assert(html.indexOf('id="view-3-detail"') > html.indexOf('id="view-3"'), "View 3 detail strip must follow View 3");
@@ -115,6 +116,13 @@ const packageJson = JSON.parse(await readFile(path.join(ROOT, "package.json"), "
 const dependencies = { ...(packageJson.dependencies || {}), ...(packageJson.devDependencies || {}) };
 assert(!Object.keys(dependencies).some((name) => ["d3", "react", "vue", "svelte"].includes(name)), "A forbidden visualization/framework dependency was introduced");
 const view4Source = await readFile(path.join(ROOT, "src/views/view4StrategyDistribution.js"), "utf8");
+const filmDetailSource = await readFile(path.join(ROOT, "src/components/filmDetail.js"), "utf8");
+for (const label of ["Studio", "Release date", "Adjusted U.S. domestic gross", "Worldwide gross", "Reported production budget", "Franchise status", "Release context", "Strategy group"]) {
+  assert(filmDetailSource.includes(`["${label}"`), `Shared film detail is missing the ${label} field`);
+}
+assert(filmDetailSource.indexOf('["Release context"') < filmDetailSource.indexOf('["Strategy group"'), "Strategy group must follow Release context in the shared detail grid");
+assert(view4Source.includes("renderFilmDetail(detailHost, film, { includeStrategy: true })"), "View 4 must render the complete shared detail with Strategy group");
+assert(!filmDetailSource.includes("compact") && !view4Source.includes("compact"), "Obsolete compact View 4 detail mode remains");
 assert(!view4Source.includes("Math.random"), "View 4 jitter must be deterministic");
 assert(!view4Source.includes("median-diamond"), "View 4 median must not reuse the remake diamond");
 assert(!view4Source.includes("tabindex: 0"), "View 4 films must not become individual Tab stops");

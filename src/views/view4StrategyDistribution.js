@@ -65,7 +65,7 @@ export function initView4(container, { films, strategySummary }) {
   function selectFilm(film, mark) {
     selectedFilmId = film.film_id;
     activeFilmId = film.film_id;
-    renderFilmDetail(detailHost, film, { includeStrategy: true, compact: true });
+    renderFilmDetail(detailHost, film, { includeStrategy: true });
     applyState();
     if (mark) tooltip.show(mark, tooltipContent(film));
   }
